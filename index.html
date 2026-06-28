@@ -1,1 +1,719 @@
-https://wedding-table-planner-green.vercel.app/
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Table Planner — Wedding Design Lab</title>
+<script>
+// WHITE LABEL THEMING SYSTEM
+// When integrated with WDT portal, pass URL params:
+// ?primary=8B7040&secondary=f0e8d8&accent=3a2810&fonthead=Cormorant+Garamond&fontbody=Lato&name1=Sarah&name2=James&date=14%20March%202026
+// Demo themes for preview
+var THEMES = {
+  default: {
+    primary:'#8B7040', secondary:'#f0e8d8', accent:'#3a2810',
+    surface:'#f5f0e8', border:'#c9b89a', muted:'#9a8060',
+    tableGuest:'#d4c4a0', tableBorder:'#a89060', tableText:'#3a2010',
+    fontHead:"Georgia,'Times New Roman',serif", fontBody:"Georgia,'Times New Roman',serif",
+    name1:'Wedding', name2:'Design Lab', date:'Your Wedding Date',
+    gridLine:'#ddd3c0', gridMajor:'#c0b090'
+  },
+  blush: {
+    primary:'#c4788a', secondary:'#fdf0f2', accent:'#7a3045',
+    surface:'#fdf5f6', border:'#e8c0c8', muted:'#b08090',
+    tableGuest:'#f0c8d0', tableBorder:'#d4a0a8', tableText:'#5a2030',
+    fontHead:"'Playfair Display',Georgia,serif", fontBody:"'Lato',Georgia,serif",
+    name1:'Sarah', name2:'James', date:'14 March 2026',
+    gridLine:'#f0d8dc', gridMajor:'#e0b8c0'
+  },
+  sage: {
+    primary:'#6b8c6b', secondary:'#f0f4f0', accent:'#2a3d2a',
+    surface:'#f4f6f4', border:'#b0c8b0', muted:'#7a9a7a',
+    tableGuest:'#c0d8c0', tableBorder:'#90b090', tableText:'#1a3020',
+    fontHead:"'Cormorant Garamond',Georgia,serif", fontBody:"Georgia,serif",
+    name1:'Emma', name2:'Oliver', date:'21 June 2026',
+    gridLine:'#d8e8d8', gridMajor:'#b8d0b8'
+  },
+  navy: {
+    primary:'#2c3e6b', secondary:'#f0f2f8', accent:'#1a2440',
+    surface:'#f4f5f8', border:'#b0b8d0', muted:'#6a7898',
+    tableGuest:'#c0c8e0', tableBorder:'#9098c0', tableText:'#1a2440',
+    fontHead:"'EB Garamond',Georgia,serif", fontBody:"Georgia,serif",
+    name1:'Charlotte', name2:'William', date:'5 September 2026',
+    gridLine:'#d8dcea', gridMajor:'#b8bedd'
+  },
+  black: {
+    primary:'#222222', secondary:'#f8f8f8', accent:'#000000',
+    surface:'#f6f6f6', border:'#cccccc', muted:'#888888',
+    tableGuest:'#dddddd', tableBorder:'#aaaaaa', tableText:'#111111',
+    fontHead:"'Didot','Bodoni MT',Georgia,serif", fontBody:"Georgia,serif",
+    name1:'Victoria', name2:'Alexander', date:'31 October 2026',
+    gridLine:'#e8e8e8', gridMajor:'#cccccc'
+  }
+};
+
+function getTheme() {
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('primary')) {
+    return {
+      primary:'#'+p.get('primary'),
+      secondary:'#'+(p.get('secondary')||'f0e8d8'),
+      accent:'#'+(p.get('accent')||'3a2810'),
+      surface:'#'+(p.get('surface')||'f5f0e8'),
+      border:'#'+(p.get('border')||'c9b89a'),
+      muted:'#'+(p.get('muted')||'9a8060'),
+      tableGuest:'#'+(p.get('tguest')||'d4c4a0'),
+      tableBorder:'#'+(p.get('tborder')||'a89060'),
+      tableText:'#'+(p.get('ttext')||'3a2010'),
+      fontHead:decodeURIComponent(p.get('fonthead')||'Georgia'),
+      fontBody:decodeURIComponent(p.get('fontbody')||'Georgia'),
+      name1:decodeURIComponent(p.get('name1')||'Wedding'),
+      name2:decodeURIComponent(p.get('name2')||'Design Lab'),
+      date:decodeURIComponent(p.get('date')||'Your Wedding Date'),
+      gridLine:'#ddd3c0', gridMajor:'#c0b090'
+    };
+  }
+  return THEMES.default;
+}
+var T = getTheme();
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:wght@400;600&family=EB+Garamond:wght@400;600&family=Lato:wght@300;400&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:var(--surface);color:var(--accent);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--accent);color:var(--secondary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-left h1{font-size:14px;font-weight:normal;letter-spacing:0.18em;text-transform:uppercase;font-family:var(--font-head)}
+.topbar-left p{font-size:10px;opacity:0.6;letter-spacing:0.08em;margin-top:2px}
+.topbar-right{font-size:10px;opacity:0.5;text-align:right;line-height:1.6}
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:285px;min-width:285px;background:var(--secondary);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.tabs{display:flex;background:var(--surface);border-bottom:2px solid var(--border)}
+.tab{flex:1;padding:10px 2px;font-size:11px;text-align:center;cursor:pointer;color:var(--muted);border:none;background:transparent;border-bottom:3px solid transparent;font-family:var(--font-body);letter-spacing:0.03em;transition:all 0.15s}
+.tab:hover{color:var(--accent);background:var(--secondary)}
+.tab.active{color:var(--accent);border-bottom:3px solid var(--primary);background:var(--secondary);font-weight:bold}
+.sbody{flex:1;overflow-y:auto;padding:14px}
+.pane{display:none}.pane.active{display:block}
+.slabel{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.slabel:first-child{margin-top:0}
+.row{margin-bottom:8px}
+.row label{font-size:11px;color:var(--accent);display:block;margin-bottom:3px;opacity:0.8}
+.row input,.row select{width:100%;padding:7px 9px;font-size:12px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--accent);font-family:var(--font-body)}
+.row input:focus,.row select:focus{outline:none;border-color:var(--primary)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{width:100%;padding:9px 12px;border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--accent);margin-bottom:6px;text-align:center;font-family:var(--font-body);letter-spacing:0.04em;transition:all 0.15s}
+.btn:hover{background:var(--border);border-color:var(--primary)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{opacity:0.88}
+.btn.danger{background:#fff0ee;color:#8a3020;border-color:#e0b0a0}
+.btn.danger:hover{background:#ffe0d8}
+.units{display:flex;border:1px solid var(--border);border-radius:5px;overflow:hidden;margin-bottom:10px}
+.ubtn{flex:1;padding:6px;font-size:11px;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:var(--font-body);transition:all 0.15s}
+.ubtn.active{background:var(--primary);color:#fff}
+.ogrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.obtn{padding:8px 4px;border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--accent);text-align:center;transition:all 0.15s;font-family:var(--font-body)}
+.obtn:hover{background:var(--secondary);border-color:var(--primary)}
+.ilist{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.irow{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface);font-size:11px}
+.iname{flex:1;color:var(--accent);line-height:1.5}
+.isub{font-size:9px;color:var(--muted)}
+.xbtn{padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:13px;transition:all 0.15s}
+.xbtn:hover{border-color:#a03020;color:#a03020}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--border);background:var(--surface);flex-shrink:0}
+.stat{text-align:center;padding:10px 4px;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.sv{font-size:20px;font-weight:bold;color:var(--primary)}
+.sl{font-size:9px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.empty{text-align:center;padding:20px 10px;color:var(--muted);font-size:11px;font-style:italic;border:1px dashed var(--border);border-radius:5px;margin-top:4px}
+.canvas-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ctool{padding:8px 14px;background:var(--secondary);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.ctool-label{font-size:10px;color:var(--muted);font-style:italic;flex:1;min-width:80px}
+.tbtn{padding:5px 10px;border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--accent);font-family:var(--font-body);transition:all 0.15s;white-space:nowrap}
+.tbtn:hover{background:var(--secondary);border-color:var(--primary)}
+.tbtn.on{background:var(--primary);color:#fff;border-color:var(--accent)}
+/* Theme switcher */
+.theme-strip{padding:8px 14px;background:var(--accent);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.theme-label{font-size:10px;color:var(--secondary);opacity:0.7;white-space:nowrap;letter-spacing:0.06em}
+.tswatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0}
+.tswatch:hover,.tswatch.active{border-color:#fff;transform:scale(1.15)}
+.tswatch-label{font-size:10px;color:var(--secondary);opacity:0.6;cursor:pointer;transition:opacity 0.15s;white-space:nowrap}
+.tswatch-label:hover{opacity:1}
+.selbar{padding:6px 14px;background:#e8f0f8;border-bottom:1px solid #b0c8e8;font-size:11px;color:#2a4a6a;display:none;flex-shrink:0;align-items:center;gap:10px}
+.selbar.show{display:flex}
+.cscroll{flex:1;overflow:auto;padding:24px;background:#d0c8b8}
+#room{position:relative;background:white;border:2px solid var(--primary);box-shadow:0 4px 28px rgba(0,0,0,0.18);flex-shrink:0;overflow:hidden}
+#gridsvg{position:absolute;inset:0;pointer-events:none;z-index:1}
+.hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;color:var(--border);z-index:2}
+.hint p{font-size:14px;margin-bottom:6px;font-style:italic;font-family:var(--font-head)}
+.hint span{font-size:11px}
+.tel{position:absolute;cursor:move;user-select:none;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10;transition:box-shadow 0.1s}
+.tel:hover{box-shadow:0 2px 16px rgba(0,0,0,0.22)!important}
+.tel.selected{outline:2px solid #4a90d9;outline-offset:2px;z-index:20}
+.tlabel{font-size:9px;font-weight:bold;text-align:center;pointer-events:none;line-height:1.3;padding:0 3px;word-break:break-word}
+.tsub{font-size:8px;pointer-events:none;margin-top:1px}
+.oel{position:absolute;cursor:move;user-select:none;display:flex;align-items:center;justify-content:center;z-index:8}
+.oel.selected{outline:2px solid #4a90d9;outline-offset:2px;z-index:18}
+.olabel{font-size:8px;font-weight:bold;text-align:center;pointer-events:none;color:#444;padding:2px;word-break:break-word}
+.rhandle{position:absolute;width:11px;height:11px;background:#4a90d9;border:2px solid #fff;border-radius:2px;cursor:se-resize;z-index:30;bottom:-6px;right:-6px;display:none;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.sbar{background:var(--secondary);border-top:1px solid var(--border);padding:5px 14px;font-size:10px;color:var(--muted);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-left">
+    <h1 id="topbar-names">Loading…</h1>
+    <p id="topbar-date"></p>
+  </div>
+  <div class="topbar-right">Table Planner &nbsp;·&nbsp; Drag to move &nbsp;·&nbsp; Blue handle to resize</div>
+</div>
+
+<!-- Theme switcher strip -->
+<div class="theme-strip">
+  <span class="theme-label">PREVIEW THEMES →</span>
+  <div class="tswatch" style="background:#8B7040" onclick="applyTheme('default')" title="Classic Gold"></div>
+  <span class="tswatch-label" onclick="applyTheme('default')">Classic</span>
+  <div class="tswatch" style="background:#c4788a" onclick="applyTheme('blush')" title="Blush Rose"></div>
+  <span class="tswatch-label" onclick="applyTheme('blush')">Blush</span>
+  <div class="tswatch" style="background:#6b8c6b" onclick="applyTheme('sage')" title="Sage Green"></div>
+  <span class="tswatch-label" onclick="applyTheme('sage')">Sage</span>
+  <div class="tswatch" style="background:#2c3e6b" onclick="applyTheme('navy')" title="Navy"></div>
+  <span class="tswatch-label" onclick="applyTheme('navy')">Navy</span>
+  <div class="tswatch" style="background:#222" onclick="applyTheme('black')" title="Black Tie"></div>
+  <span class="tswatch-label" onclick="applyTheme('black')">Black Tie</span>
+  <span style="margin-left:auto;font-size:9px;color:rgba(255,255,255,0.4);font-style:italic">In production, your couple's palette loads automatically</span>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="tabs">
+      <button class="tab active" id="tab-room" onclick="showTab('room')">Room</button>
+      <button class="tab" id="tab-tables" onclick="showTab('tables')">Tables</button>
+      <button class="tab" id="tab-feat" onclick="showTab('feat')">Features</button>
+      <button class="tab" id="tab-sum" onclick="showTab('sum')">Summary</button>
+    </div>
+    <div class="sbody">
+
+      <!-- ROOM PANE -->
+      <div class="pane active" id="pane-room">
+        <div class="slabel">Room dimensions</div>
+        <div class="g2">
+          <div class="row"><label>Width</label><input type="number" id="rw" value="20" min="5" max="300" onchange="renderRoom()"></div>
+          <div class="row"><label>Length</label><input type="number" id="rl" value="15" min="5" max="300" onchange="renderRoom()"></div>
+        </div>
+        <div class="units">
+          <button class="ubtn active" id="ubtn-m" onclick="setUnit('m')">Metres</button>
+          <button class="ubtn" id="ubtn-ft" onclick="setUnit('ft')">Feet</button>
+        </div>
+        <div class="slabel">Head table</div>
+        <div class="row"><label>Wall position</label>
+          <select id="hpos">
+            <option value="top">Top of room</option>
+            <option value="bottom">Bottom of room</option>
+            <option value="left">Left wall</option>
+            <option value="right">Right wall</option>
+          </select>
+        </div>
+        <div class="row"><label>Style</label>
+          <select id="hstyle">
+            <option value="rect">Rectangular (traditional)</option>
+            <option value="round">Round</option>
+            <option value="sweep">Sweetheart — 2 seats</option>
+          </select>
+        </div>
+        <div class="row"><label>Seats (ignored for sweetheart)</label>
+          <select id="hseats">
+            <option value="4">4</option><option value="6">6</option>
+            <option value="8" selected>8</option><option value="10">10</option><option value="12">12</option>
+          </select>
+        </div>
+        <button class="btn primary" onclick="placeHead()">Place head table</button>
+        <div class="slabel">Auto-optimise guest tables</div>
+        <div class="row"><label>Total guests (excl. head table)</label><input type="number" id="og" value="80" min="4" max="2000"></div>
+        <div class="row"><label>Table shape</label>
+          <select id="oshape">
+            <option value="round">Round tables only</option>
+            <option value="rect">Rectangular tables only</option>
+            <option value="mixed">Mixed — round &amp; rectangular</option>
+          </select>
+        </div>
+        <div class="row"><label>Seats per table</label>
+          <select id="os">
+            <option value="6">6 per table</option>
+            <option value="8" selected>8 per table</option>
+            <option value="10">10 per table</option>
+            <option value="mixed68">Mixed 6 &amp; 8</option>
+            <option value="mixed810">Mixed 8 &amp; 10</option>
+          </select>
+        </div>
+        <div class="row"><label>Aisle width</label>
+          <select id="aisle">
+            <option value="1.2">1.2m — Cosy</option>
+            <option value="1.5" selected>1.5m — Comfortable</option>
+            <option value="1.8">1.8m — Generous</option>
+            <option value="2.0">2.0m — Wide</option>
+          </select>
+        </div>
+        <button class="btn primary" onclick="optimise()">Optimise layout</button>
+        <button class="btn danger" onclick="clearAll()">Clear entire plan</button>
+      </div>
+
+      <!-- TABLES PANE -->
+      <div class="pane" id="pane-tables">
+        <div class="slabel">Add a table manually</div>
+        <div class="row"><label>Table name</label><input type="text" id="tname" placeholder="e.g. Table 1, Family…"></div>
+        <div class="g2">
+          <div class="row"><label>Shape</label>
+            <select id="tshape"><option value="round">Round</option><option value="rect">Rectangular</option></select>
+          </div>
+          <div class="row"><label>Seats</label>
+            <select id="tseats">
+              <option value="4">4</option><option value="6">6</option>
+              <option value="8" selected>8</option><option value="10">10</option><option value="12">12</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn primary" onclick="addTable()">Add to floor plan</button>
+        <div class="slabel">Tables on plan</div>
+        <div class="ilist" id="tlist"><div class="empty">No tables added yet</div></div>
+      </div>
+
+      <!-- FEATURES PANE -->
+      <div class="pane" id="pane-feat">
+        <div class="slabel">Add room feature or obstacle</div>
+        <div class="ogrid">
+          <button class="obtn" onclick="addObs('pillar','Pillar','c')">⬤ Pillar</button>
+          <button class="obtn" onclick="addObs('wall','Wall','r')">▬ Wall</button>
+          <button class="obtn" onclick="addObs('dance','Dance floor','r')">♪ Dance</button>
+          <button class="obtn" onclick="addObs('stage','Stage','r')">▲ Stage</button>
+          <button class="obtn" onclick="addObs('bar','Bar','r')">🍸 Bar</button>
+          <button class="obtn" onclick="addObs('buffet','Buffet','r')">🍽 Buffet</button>
+          <button class="obtn" onclick="addObs('gift','Gift table','r')">🎁 Gifts</button>
+          <button class="obtn" onclick="addObs('photo','Photo booth','r')">📷 Photo booth</button>
+          <button class="obtn" onclick="addObs('entry','Entry / exit','r')">🚪 Entry</button>
+          <button class="obtn" onclick="addObs('kitchen','Service entry','r')">👨‍🍳 Service</button>
+        </div>
+        <p style="font-size:10px;color:var(--muted);font-style:italic;margin-bottom:8px;line-height:1.5">Drag items to position. Drag the <span style="color:#4a90d9;font-style:normal">blue handle</span> (bottom-right) to resize to actual venue dimensions.</p>
+        <div class="slabel">Features on plan</div>
+        <div class="ilist" id="olist"><div class="empty">No features added yet</div></div>
+      </div>
+
+      <!-- SUMMARY PANE -->
+      <div class="pane" id="pane-sum">
+        <div class="slabel">Seating summary</div>
+        <div id="sumtext" style="font-size:11px;line-height:2"></div>
+        <div class="slabel" style="margin-top:16px">Export</div>
+        <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="sv" id="st">0</div><div class="sl">Tables</div></div>
+      <div class="stat"><div class="sv" id="ss">0</div><div class="sl">Seats</div></div>
+      <div class="stat"><div class="sv" id="sf">0</div><div class="sl">Features</div></div>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <div class="ctool">
+      <span class="ctool-label">Click to select · Drag to move · Blue handle to resize</span>
+      <button class="tbtn" onclick="zi()">＋ Zoom</button>
+      <button class="tbtn" onclick="zo()">－ Zoom</button>
+      <button class="tbtn" onclick="zr()">Reset</button>
+      <button class="tbtn on" id="gridbtn" onclick="toggleGrid()">Grid on</button>
+    </div>
+    <div class="selbar" id="selbar">
+      <span id="selinfo">Nothing selected</span>
+      <button class="tbtn" onclick="deleteSelected()" style="background:#fff0ee;color:#8a3020;border-color:#e0b0a0">Delete</button>
+      <button class="tbtn" onclick="clearSelected()">Deselect</button>
+    </div>
+    <div class="cscroll">
+      <div id="room">
+        <svg id="gridsvg"></svg>
+        <div class="hint" id="hint">
+          <p id="hint-title">Your venue floor plan</p>
+          <span>Set room dimensions and add tables to begin</span>
+        </div>
+      </div>
+    </div>
+    <div class="sbar">
+      <span id="sbar-dim">Room: 20m × 15m</span>
+      <span id="sbar-zoom">Zoom: 100%</span>
+      <span id="sbar-sel" style="color:#4a90d9;font-style:italic"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────
+var tables=[], obs=[], tid=0, oid=0, unit='m', zoom=1, PPM=36;
+var rw=20, rl=15, showGrid=true, selectedId=null, selectedType=null;
+
+var TABLE_ROUND_D = {2:0.9,4:1.2,6:1.5,8:1.8,10:2.1,12:2.4};
+var TABLE_RECT    = {2:{w:1.2,h:0.75},4:{w:1.8,h:0.9},6:{w:2.2,h:0.9},8:{w:2.6,h:0.9},10:{w:3.0,h:0.9},12:{w:3.6,h:0.9}};
+var OBS_DEF = {pillar:{w:0.6,h:0.6},wall:{w:4,h:0.3},dance:{w:5,h:4},stage:{w:6,h:1.8},bar:{w:3,h:1.2},buffet:{w:5,h:1.2},gift:{w:1.8,h:0.9},photo:{w:2.4,h:2.4},entry:{w:1.8,h:0.5},kitchen:{w:3,h:1.2}};
+var OBS_COL = {pillar:'#909090',wall:'#b4b4b4',dance:'#b0d0f0',stage:'#e8d0a0',bar:'#a8d4a0',buffet:'#f0e4a0',gift:'#f0b0c8',photo:'#c8b0f0',entry:'#c0c0c0',kitchen:'#f0c8a0'};
+
+// ── Theming ────────────────────────────────────────────
+function applyTheme(name) {
+  var t = THEMES[name] || THEMES.default;
+  T = t;
+  var r = document.documentElement.style;
+  r.setProperty('--primary', t.primary);
+  r.setProperty('--secondary', t.secondary);
+  r.setProperty('--accent', t.accent);
+  r.setProperty('--surface', t.surface);
+  r.setProperty('--border', t.border);
+  r.setProperty('--muted', t.muted);
+  r.setProperty('--font-head', t.fontHead);
+  r.setProperty('--font-body', t.fontBody);
+  document.getElementById('topbar-names').textContent = t.name1 + ' & ' + t.name2;
+  document.getElementById('topbar-date').textContent = t.date + ' — Table Planner';
+  document.getElementById('hint-title').textContent = t.name1 + ' & ' + t.name2 + ' — Venue Floor Plan';
+  // Re-render table colours
+  tables.forEach(function(tbl) { recolourTable(tbl); });
+  document.querySelectorAll('.tswatch').forEach(function(s,i){
+    s.className='tswatch'+(Object.keys(THEMES)[i]===name?' active':'');
+  });
+  drawGrid();
+}
+
+function recolourTable(t) {
+  var el = document.getElementById(t.eid); if(!el)return;
+  var bg = t.head ? T.primary : T.tableGuest;
+  var bc = t.head ? T.accent : T.tableBorder;
+  var tc = t.head ? '#fff' : T.tableText;
+  var sc = t.head ? 'rgba(255,255,255,0.7)' : T.muted;
+  el.style.background = bg;
+  el.style.borderColor = bc;
+  var lbl=el.querySelector('.tlabel'); if(lbl)lbl.style.color=tc;
+  var sub=el.querySelector('.tsub'); if(sub)sub.style.color=sc;
+}
+
+// ── Tab nav ─────────────────────────────────────────────
+function showTab(name) {
+  ['room','tables','feat','sum'].forEach(function(n){
+    document.getElementById('tab-'+n).className='tab'+(n===name?' active':'');
+    document.getElementById('pane-'+n).className='pane'+(n===name?' active':'');
+  });
+  if(name==='sum')updateSum();
+}
+
+// ── Units ───────────────────────────────────────────────
+function setUnit(u){
+  unit=u;
+  document.getElementById('ubtn-m').className='ubtn'+(u==='m'?' active':'');
+  document.getElementById('ubtn-ft').className='ubtn'+(u==='ft'?' active':'');
+  updateSbar();
+}
+
+// ── Room ────────────────────────────────────────────────
+function getDims(){rw=parseFloat(document.getElementById('rw').value)||20;rl=parseFloat(document.getElementById('rl').value)||15;}
+function px(m2){return Math.round(m2*PPM*zoom);}
+
+function renderRoom(){
+  getDims();
+  var r=document.getElementById('room');
+  r.style.width=px(rw)+'px'; r.style.height=px(rl)+'px';
+  drawGrid();
+  tables.forEach(posT); obs.forEach(posO);
+  updateSbar();
+}
+
+function drawGrid(){
+  var g=document.getElementById('gridsvg');
+  var pw=px(rw),ph=px(rl);
+  g.setAttribute('width',pw);g.setAttribute('height',ph);
+  g.style.width=pw+'px';g.style.height=ph+'px';
+  if(!showGrid){g.innerHTML='';return;}
+  var step=PPM*zoom,s='';
+  for(var x=step;x<pw;x+=step){var maj=Math.round(x/step)%5===0;s+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="'+ph+'" stroke="'+(maj?T.gridMajor:T.gridLine)+'" stroke-width="'+(maj?0.8:0.4)+'"/>';}
+  for(var y=step;y<ph;y+=step){var majy=Math.round(y/step)%5===0;s+='<line x1="0" y1="'+y+'" x2="'+pw+'" y2="'+y+'" stroke="'+(majy?T.gridMajor:T.gridLine)+'" stroke-width="'+(majy?0.8:0.4)+'"/>';}
+  for(var lx=5;lx<=rw;lx+=5){var ux=unit==='m'?lx:Math.round(lx*3.281);s+='<text x="'+px(lx)+'" y="11" font-size="8" fill="'+T.gridMajor+'" font-family="Georgia" text-anchor="middle">'+ux+(unit==='m'?'m':'ft')+'</text>';}
+  for(var ly=5;ly<=rl;ly+=5){var uy=unit==='m'?ly:Math.round(ly*3.281);s+='<text x="10" y="'+(px(ly)+4)+'" font-size="8" fill="'+T.gridMajor+'" font-family="Georgia">'+uy+(unit==='m'?'m':'ft')+'</text>';}
+  g.innerHTML=s;
+}
+
+function toggleGrid(){
+  showGrid=!showGrid;
+  document.getElementById('gridbtn').className='tbtn'+(showGrid?' on':'');
+  document.getElementById('gridbtn').textContent='Grid '+(showGrid?'on':'off');
+  drawGrid();
+}
+
+function updateSbar(){
+  var w=unit==='m'?rw:Math.round(rw*3.281),l=unit==='m'?rl:Math.round(rl*3.281),u=unit==='m'?'m':'ft';
+  document.getElementById('sbar-dim').textContent='Room: '+w+u+' × '+l+u;
+  document.getElementById('sbar-zoom').textContent='Zoom: '+Math.round(zoom*100)+'%';
+}
+
+// ── Table sizing ─────────────────────────────────────────
+function tsize(seats,shape){
+  if(shape==='round'){var d=TABLE_ROUND_D[seats]||1.8;return{w:d,h:d};}
+  return TABLE_RECT[seats]||{w:2.6,h:0.9};
+}
+
+// ── Position elements ────────────────────────────────────
+function posT(t){
+  var el=document.getElementById(t.eid);if(!el)return;
+  el.style.left=px(t.x)+'px';el.style.top=px(t.y)+'px';
+  el.style.width=px(t.w)+'px';el.style.height=px(t.h)+'px';
+  el.style.borderRadius=t.shape==='round'?'50%':'6px';
+}
+function posO(o){
+  var el=document.getElementById(o.eid);if(!el)return;
+  el.style.left=px(o.x)+'px';el.style.top=px(o.y)+'px';
+  el.style.width=px(o.w)+'px';el.style.height=px(o.h)+'px';
+  el.style.borderRadius=o.shape==='c'?'50%':'6px';
+}
+
+// ── Selection ────────────────────────────────────────────
+function selectItem(id,type){
+  if(selectedId){
+    var old=document.getElementById(selectedId);
+    if(old){old.classList.remove('selected');var rh=old.querySelector('.rhandle');if(rh)rh.style.display='none';}
+  }
+  selectedId=id;selectedType=type;
+  if(!id){document.getElementById('selbar').className='selbar';document.getElementById('sbar-sel').textContent='';return;}
+  var el=document.getElementById(id);if(!el)return;
+  el.classList.add('selected');
+  var rh2=el.querySelector('.rhandle');if(rh2)rh2.style.display='block';
+  var item=type==='table'?tables.find(function(t){return t.eid===id;}):obs.find(function(o){return o.eid===id;});
+  if(item){var info=item.name+(type==='table'?' ('+item.seats+' seats)':'');document.getElementById('selinfo').textContent=info;document.getElementById('sbar-sel').textContent='Selected: '+info;}
+  document.getElementById('selbar').className='selbar show';
+}
+function clearSelected(){selectItem(null,null);}
+function deleteSelected(){if(!selectedId)return;if(selectedType==='table')removeTableByEid(selectedId);else removeObsByEid(selectedId);selectItem(null,null);}
+
+// ── Drag & resize ─────────────────────────────────────────
+function makeDraggable(el,item,type){
+  el.addEventListener('mousedown',function(e){
+    if(e.target.classList.contains('rhandle'))return;
+    e.preventDefault();e.stopPropagation();
+    selectItem(el.id,type);
+    var sx=e.clientX,sy=e.clientY,sl=item.x*PPM*zoom,st=item.y*PPM*zoom;
+    var rm=document.getElementById('room');
+    function mv(ev){
+      var nl=Math.max(0,Math.min(rm.offsetWidth-el.offsetWidth,sl+(ev.clientX-sx)));
+      var nt=Math.max(0,Math.min(rm.offsetHeight-el.offsetHeight,st+(ev.clientY-sy)));
+      item.x=nl/(PPM*zoom);item.y=nt/(PPM*zoom);
+      el.style.left=Math.round(nl)+'px';el.style.top=Math.round(nt)+'px';
+    }
+    function up(){document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);}
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  });
+}
+function makeResizable(el,item,isRound){
+  var rh=el.querySelector('.rhandle');if(!rh)return;
+  rh.addEventListener('mousedown',function(e){
+    e.preventDefault();e.stopPropagation();
+    var sx=e.clientX,sy=e.clientY,sw=item.w*PPM*zoom,sh=item.h*PPM*zoom,minPx=0.4*PPM*zoom;
+    function mv(ev){
+      var nw=Math.max(minPx,sw+(ev.clientX-sx));
+      var nh=isRound?nw:Math.max(minPx,sh+(ev.clientY-sy));
+      item.w=nw/(PPM*zoom);item.h=nh/(PPM*zoom);
+      el.style.width=Math.round(nw)+'px';el.style.height=Math.round(nh)+'px';
+    }
+    function up(){document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);}
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  });
+}
+
+// ── Create elements ──────────────────────────────────────
+function createTableEl(t){
+  var el=document.createElement('div');
+  el.className='tel';el.id=t.eid;
+  var bg=t.head?T.primary:T.tableGuest;
+  var bc=t.head?T.accent:T.tableBorder;
+  var tc=t.head?'#fff':T.tableText;
+  var sc=t.head?'rgba(255,255,255,0.7)':T.muted;
+  el.style.cssText='position:absolute;left:'+px(t.x)+'px;top:'+px(t.y)+'px;width:'+px(t.w)+'px;height:'+px(t.h)+'px;background:'+bg+';border:2px solid '+bc+';border-radius:'+(t.shape==='round'?'50%':'6px')+';box-shadow:0 1px 6px rgba(0,0,0,0.10)';
+  el.innerHTML='<div class="tlabel" style="color:'+tc+'">'+t.name+'</div><div class="tsub" style="color:'+sc+'">'+t.seats+' seats</div><div class="rhandle"></div>';
+  makeDraggable(el,t,'table');
+  makeResizable(el,t,t.shape==='round');
+  return el;
+}
+function createObsEl(o){
+  var el=document.createElement('div');
+  el.className='oel';el.id=o.eid;
+  el.style.cssText='position:absolute;left:'+px(o.x)+'px;top:'+px(o.y)+'px;width:'+px(o.w)+'px;height:'+px(o.h)+'px;background:'+(OBS_COL[o.type]||'#ccc')+';border:2px dashed #888;border-radius:'+(o.shape==='c'?'50%':'6px')+';opacity:0.82';
+  el.innerHTML='<div class="olabel">'+o.name+'</div><div class="rhandle"></div>';
+  makeDraggable(el,o,'obs');
+  makeResizable(el,o,o.shape==='c');
+  return el;
+}
+
+// ── Add table ────────────────────────────────────────────
+function addTable(){
+  var name=document.getElementById('tname').value.trim()||('Table '+(tid+1));
+  var shape=document.getElementById('tshape').value;
+  var seats=parseInt(document.getElementById('tseats').value)||8;
+  var sz=tsize(seats,shape);
+  tid++;
+  var t={id:tid,eid:'t'+tid,name:name,shape:shape,seats:seats,w:sz.w,h:sz.h,x:1+Math.random()*3,y:1+Math.random()*2,head:false};
+  tables.push(t);
+  document.getElementById('room').appendChild(createTableEl(t));
+  document.getElementById('hint').style.display='none';
+  document.getElementById('tname').value='';
+  renderTList();updateStats();
+}
+
+// ── Add obstacle ─────────────────────────────────────────
+function addObs(type,name,shape){
+  var sz=OBS_DEF[type]||{w:2,h:1};
+  oid++;
+  var o={id:oid,eid:'o'+oid,type:type,name:name,shape:shape,w:sz.w,h:sz.h,x:1+Math.random()*4,y:1+Math.random()*3};
+  obs.push(o);
+  document.getElementById('room').appendChild(createObsEl(o));
+  document.getElementById('hint').style.display='none';
+  renderOList();updateStats();
+}
+
+// ── Place head table ──────────────────────────────────────
+function placeHead(){
+  getDims();
+  var pos=document.getElementById('hpos').value;
+  var style=document.getElementById('hstyle').value;
+  var seats=style==='sweep'?2:parseInt(document.getElementById('hseats').value)||8;
+  var shape=style==='round'?'round':'rect';
+  var old=tables.find(function(t){return t.head;});
+  if(old){var oe=document.getElementById(old.eid);if(oe)oe.remove();tables=tables.filter(function(t){return!t.head;});}
+  var sz=tsize(seats,shape);
+  var x=rw/2-sz.w/2,y=0.6;
+  if(pos==='bottom'){y=rl-sz.h-0.6;}
+  else if(pos==='left'){x=0.4;y=rl/2-sz.h/2;}
+  else if(pos==='right'){x=rw-sz.w-0.4;y=rl/2-sz.h/2;}
+  tid++;
+  var name=style==='sweep'?'Sweetheart Table':'Head Table';
+  var t={id:tid,eid:'t'+tid,name:name,shape:shape,seats:seats,w:sz.w,h:sz.h,x:x,y:y,head:true};
+  tables.push(t);
+  document.getElementById('room').appendChild(createTableEl(t));
+  document.getElementById('hint').style.display='none';
+  renderTList();updateStats();
+}
+
+// ── Optimise layout ───────────────────────────────────────
+function optimise(){
+  getDims();
+  tables.filter(function(t){return!t.head;}).forEach(function(t){var e=document.getElementById(t.eid);if(e)e.remove();});
+  tables=tables.filter(function(t){return t.head;});
+
+  var guests=parseInt(document.getElementById('og').value)||80;
+  var oshape=document.getElementById('oshape').value;
+  var seatOpt=document.getElementById('os').value;
+  var aisle=parseFloat(document.getElementById('aisle').value)||1.5;
+  var wall=0.9;
+  var head=tables.find(function(t){return t.head;});
+  var hpos=document.getElementById('hpos').value;
+
+  var useX1=wall,useY1=wall,useX2=rw-wall,useY2=rl-wall;
+  if(head){
+    var hsz=tsize(head.seats,head.shape);
+    if(hpos==='top')useY1=head.y+hsz.h+aisle;
+    if(hpos==='bottom')useY2=head.y-aisle;
+    if(hpos==='left')useX1=head.x+hsz.w+aisle;
+    if(hpos==='right')useX2=head.x-aisle;
+  }
+
+  var usW=useX2-useX1,usH=useY2-useY1;
+
+  // Determine reference cell size
+  function getSeats(idx){
+    if(seatOpt==='mixed68')return idx%2===0?8:6;
+    if(seatOpt==='mixed810')return idx%2===0?10:8;
+    return parseInt(seatOpt)||8;
+  }
+  function getShape(idx){
+    if(oshape==='mixed')return idx%2===0?'round':'rect';
+    return oshape;
+  }
+
+  var refS=getSeats(0),refSh=getShape(0);
+  var refSz=tsize(refS,refSh);
+  var cellW=refSz.w+aisle,cellH=refSz.h+aisle;
+  var cols=Math.max(1,Math.floor(usW/cellW));
+  var rows=Math.max(1,Math.floor(usH/cellH));
+
+  var rem=guests,n=0,idx=0;
+  outer:
+  for(var row=0;row<rows;row++){
+    for(var col=0;col<cols;col++){
+      if(rem<=0)break outer;
+      var s=Math.min(getSeats(idx),rem);
+      var sh=getShape(idx);
+      var sz2=tsize(s,sh);
+      // Centre within cell
+      var cx=useX1+col*cellW+(cellW-sz2.w)/2;
+      var cy=useY1+row*cellH+(cellH-sz2.h)/2;
+      n++;tid++;idx++;
+      var t={id:tid,eid:'t'+tid,name:'Table '+n,shape:sh,seats:s,w:sz2.w,h:sz2.h,x:cx,y:cy,head:false};
+      tables.push(t);
+      document.getElementById('room').appendChild(createTableEl(t));
+      rem-=s;
+    }
+  }
+  document.getElementById('hint').style.display='none';
+  renderTList();updateStats();
+}
+
+// ── Remove ────────────────────────────────────────────────
+function removeTableByEid(eid){var t=tables.find(function(x){return x.eid===eid;});if(!t)return;var e=document.getElementById(t.eid);if(e)e.remove();tables=tables.filter(function(x){return x.eid!==eid;});renderTList();updateStats();}
+function removeObsByEid(eid){var o=obs.find(function(x){return x.eid===eid;});if(!o)return;var e=document.getElementById(o.eid);if(e)e.remove();obs=obs.filter(function(x){return x.eid!==eid;});renderOList();updateStats();}
+function removeTable(id){var t=tables.find(function(x){return x.id===id;});if(t)removeTableByEid(t.eid);}
+function removeObs(id){var o=obs.find(function(x){return x.id===id;});if(o)removeObsByEid(o.eid);}
+
+// ── Lists ─────────────────────────────────────────────────
+function renderTList(){
+  var el=document.getElementById('tlist');
+  if(!tables.length){el.innerHTML='<div class="empty">No tables added yet</div>';return;}
+  el.innerHTML=tables.map(function(t){
+    var dot='<div style="width:13px;height:13px;flex-shrink:0;background:'+(t.head?T.primary:T.tableGuest)+';border-radius:'+(t.shape==='round'?'50%':'3px')+';border:1px solid '+T.tableBorder+'"></div>';
+    return'<div class="irow">'+dot+'<div class="iname">'+t.name+'<br><span class="isub">'+t.seats+' seats · '+t.shape+(t.head?' · HEAD':'')+'</span></div><button class="xbtn" onclick="removeTable('+t.id+')">×</button></div>';
+  }).join('');
+}
+function renderOList(){
+  var el=document.getElementById('olist');
+  if(!obs.length){el.innerHTML='<div class="empty">No features added yet</div>';return;}
+  el.innerHTML=obs.map(function(o){
+    return'<div class="irow"><div style="width:13px;height:13px;flex-shrink:0;background:'+(OBS_COL[o.type]||'#ccc')+';border:1px dashed #888;border-radius:'+(o.shape==='c'?'50%':'3px')+'"></div><div class="iname">'+o.name+'</div><button class="xbtn" onclick="removeObs('+o.id+')">×</button></div>';
+  }).join('');
+}
+
+// ── Stats & summary ───────────────────────────────────────
+function updateStats(){
+  document.getElementById('st').textContent=tables.length;
+  document.getElementById('ss').textContent=tables.reduce(function(a,t){return a+(parseInt(t.seats)||0);},0);
+  document.getElementById('sf').textContent=obs.length;
+}
+function updateSum(){
+  var el=document.getElementById('sumtext');
+  if(!tables.length){el.innerHTML='<span style="color:var(--muted);font-style:italic">No tables on plan yet</span>';return;}
+  var total=tables.reduce(function(a,t){return a+(parseInt(t.seats)||0);},0);
+  el.innerHTML='<strong>Total tables:</strong> '+tables.length+'<br><strong>Total seats:</strong> '+total+'<br><br>'+
+    tables.map(function(t){return'<span style="color:'+T.primary+'">▪ '+t.name+'</span> — '+t.seats+' seats'+(t.head?' <em>(head table)</em>':'');}).join('<br>');
+}
+
+// ── Zoom ──────────────────────────────────────────────────
+function zi(){zoom=Math.min(zoom*1.25,4);renderRoom();}
+function zo(){zoom=Math.max(zoom*0.75,0.25);renderRoom();}
+function zr(){zoom=1;renderRoom();}
+
+// ── Clear ─────────────────────────────────────────────────
+function clearAll(){
+  if(!confirm('Clear the entire floor plan?'))return;
+  tables.forEach(function(t){var e=document.getElementById(t.eid);if(e)e.remove();});
+  obs.forEach(function(o){var e=document.getElementById(o.eid);if(e)e.remove();});
+  tables=[];obs=[];tid=0;oid=0;
+  selectItem(null,null);renderTList();renderOList();updateStats();
+  document.getElementById('hint').style.display='';
+}
+
+// Click canvas background to deselect
+document.getElementById('room').addEventListener('click',function(e){
+  if(e.target===this||e.target.tagName==='svg'||e.target.tagName==='line'||e.target.tagName==='text')clearSelected();
+});
+
+// ── Init ──────────────────────────────────────────────────
+applyTheme('default');
+renderRoom();
+</script>
+</body>
+</html>
