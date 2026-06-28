@@ -4,137 +4,196 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Table Planner — Wedding Design Lab</title>
-<script>
-var THEMES = {
-  default:{primary:'#8B7040',secondary:'#f0e8d8',accent:'#3a2810',surface:'#f5f0e8',border:'#c9b89a',muted:'#9a8060',tableGuest:'#d4c4a0',tableBorder:'#a89060',tableText:'#3a2010',fontHead:"Georgia,serif",fontBody:"Georgia,serif",name1:'Wedding',name2:'Design Lab',date:'Your Wedding Date',gridLine:'#e8e0d0',gridMajor:'#c9b89a'},
-  blush:{primary:'#c4788a',secondary:'#fdf0f2',accent:'#7a3045',surface:'#fdf5f6',border:'#e8c0c8',muted:'#b08090',tableGuest:'#f0c8d0',tableBorder:'#d4a0a8',tableText:'#5a2030',fontHead:"Georgia,serif",fontBody:"Georgia,serif",name1:'Sarah',name2:'James',date:'14 March 2026',gridLine:'#f5e0e4',gridMajor:'#e0b8c0'},
-  sage:{primary:'#6b8c6b',secondary:'#f0f4f0',accent:'#2a3d2a',surface:'#f4f6f4',border:'#b0c8b0',muted:'#7a9a7a',tableGuest:'#c0d8c0',tableBorder:'#90b090',tableText:'#1a3020',fontHead:"Georgia,serif",fontBody:"Georgia,serif",name1:'Emma',name2:'Oliver',date:'21 June 2026',gridLine:'#dceadc',gridMajor:'#b8d0b8'},
-  navy:{primary:'#2c3e6b',secondary:'#f0f2f8',accent:'#1a2440',surface:'#f4f5f8',border:'#b0b8d0',muted:'#6a7898',tableGuest:'#c0c8e0',tableBorder:'#9098c0',tableText:'#1a2440',fontHead:"Georgia,serif",fontBody:"Georgia,serif",name1:'Charlotte',name2:'William',date:'5 September 2026',gridLine:'#dce0ee',gridMajor:'#b8bedd'},
-  black:{primary:'#222',secondary:'#f8f8f8',accent:'#000',surface:'#f6f6f6',border:'#ccc',muted:'#888',tableGuest:'#ddd',tableBorder:'#aaa',tableText:'#111',fontHead:"Georgia,serif",fontBody:"Georgia,serif",name1:'Victoria',name2:'Alexander',date:'31 October 2026',gridLine:'#eee',gridMajor:'#ccc'}
-};
-var T = THEMES.default;
-</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Georgia,serif;background:#e8e0d4;color:#2c2416;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-.topbar{background:var(--accent,#3a2810);color:var(--secondary,#f0e8d8);padding:9px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:100}
+body{font-family:Georgia,'Times New Roman',serif;background:#e8e0d4;color:#2c2416;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* TOP BAR */
+.topbar{background:#3a2810;color:#f0e8d0;padding:9px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar h1{font-size:13px;font-weight:normal;letter-spacing:0.18em;text-transform:uppercase}
-.topbar p{font-size:9px;opacity:0.55;letter-spacing:0.07em;margin-top:1px}
-.topbar-right{font-size:9px;opacity:0.45;text-align:right;line-height:1.7}
-.theme-strip{padding:6px 14px;background:var(--accent,#3a2810);border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tlabel{font-size:9px;color:rgba(255,255,255,0.5);white-space:nowrap;letter-spacing:0.07em}
-.tswatch{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0}
+.topbar p{font-size:9px;opacity:0.5;letter-spacing:0.07em;margin-top:1px}
+.topbar-right{font-size:9px;opacity:0.4;text-align:right;line-height:1.7}
+
+/* THEME STRIP */
+.theme-strip{padding:5px 14px;background:#2a1e0c;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:7px;flex-shrink:0}
+.thlabel{font-size:9px;color:rgba(255,255,255,0.4);white-space:nowrap;letter-spacing:0.07em}
+.tswatch{width:16px;height:16px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0}
 .tswatch:hover,.tswatch.on{border-color:#fff;transform:scale(1.2)}
-.tslabel{font-size:9px;color:rgba(255,255,255,0.5);cursor:pointer;white-space:nowrap}
-.tslabel:hover{color:#fff}
-.prod-note{margin-left:auto;font-size:9px;color:rgba(255,255,255,0.3);font-style:italic}
+.tslbl{font-size:9px;color:rgba(255,255,255,0.4);cursor:pointer;white-space:nowrap}
+.tslbl:hover{color:rgba(255,255,255,0.8)}
+.th-note{margin-left:auto;font-size:9px;color:rgba(255,255,255,0.25);font-style:italic}
+
+/* STEP PROGRESS BAR */
+.stepbar{display:flex;background:#f0e8d8;border-bottom:2px solid #c9b89a;flex-shrink:0}
+.step{flex:1;padding:8px 4px;text-align:center;font-size:10px;color:#9a8060;border-right:1px solid #c9b89a;cursor:pointer;transition:all 0.15s;line-height:1.4;position:relative}
+.step:last-child{border-right:none}
+.step .snum{display:block;font-size:14px;font-weight:bold;color:#c9b89a;line-height:1}
+.step .stxt{display:block;font-size:9px;letter-spacing:0.03em;margin-top:2px}
+.step.active{background:#fff;color:#3a2810}
+.step.active .snum{color:#8B7040}
+.step.done{background:#f8f4ee;color:#6a5020}
+.step.done .snum{color:#8B7040}
+.step.done::after{content:'✓';position:absolute;top:4px;right:6px;font-size:10px;color:#8B7040}
+
+/* MAIN LAYOUT */
 .main{display:flex;flex:1;overflow:hidden}
-.sidebar{width:272px;min-width:272px;background:var(--secondary,#f0e8d8);border-right:1px solid var(--border,#c9b89a);display:flex;flex-direction:column;overflow:hidden}
-.tabs{display:flex;background:var(--surface,#f5f0e8);border-bottom:2px solid var(--border,#c9b89a)}
-.tab{flex:1;padding:9px 2px;font-size:10px;text-align:center;cursor:pointer;color:var(--muted,#9a8060);border:none;background:transparent;border-bottom:3px solid transparent;font-family:Georgia,serif;letter-spacing:0.03em;transition:all 0.15s}
-.tab:hover{color:var(--accent,#3a2810);background:var(--secondary,#f0e8d8)}
-.tab.active{color:var(--accent,#3a2810);border-bottom:3px solid var(--primary,#8B7040);background:var(--secondary,#f0e8d8);font-weight:bold}
-.sbody{flex:1;overflow-y:auto;padding:12px}
+
+/* SIDEBAR */
+.sidebar{width:270px;min-width:270px;background:#f0e8d8;border-right:1px solid #c9b89a;display:flex;flex-direction:column;overflow:hidden}
+.sbody{flex:1;overflow-y:auto;padding:14px}
 .pane{display:none}.pane.active{display:block}
-.sl{font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted,#9a8060);margin:12px 0 5px;padding-bottom:3px;border-bottom:1px solid var(--border,#c9b89a)}
+.sl{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#9a8060;margin:13px 0 5px;padding-bottom:3px;border-bottom:1px solid #c9b89a}
 .sl:first-child{margin-top:0}
-.row{margin-bottom:7px}
-.row label{font-size:11px;color:var(--accent,#3a2810);display:block;margin-bottom:2px;opacity:0.8}
-.row input,.row select{width:100%;padding:6px 8px;font-size:11px;border:1px solid var(--border,#c9b89a);border-radius:4px;background:var(--surface,#f5f0e8);color:var(--accent,#3a2810);font-family:Georgia,serif}
-.row input:focus,.row select:focus{outline:none;border-color:var(--primary,#8B7040)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.btn{width:100%;padding:8px 10px;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid var(--border,#c9b89a);background:var(--surface,#f5f0e8);color:var(--accent,#3a2810);margin-bottom:5px;text-align:center;font-family:Georgia,serif;letter-spacing:0.04em;transition:all 0.15s}
-.btn:hover{background:var(--border,#c9b89a)}
-.btn.pri{background:var(--primary,#8B7040);color:#fff;border-color:var(--accent,#3a2810)}
-.btn.pri:hover{opacity:0.87}
+.row{margin-bottom:8px}
+.row label{font-size:11px;color:#3a2810;display:block;margin-bottom:3px;opacity:0.85}
+.row input,.row select{width:100%;padding:7px 8px;font-size:11px;border:1px solid #c9b89a;border-radius:4px;background:#faf6f0;color:#2c2416;font-family:Georgia,serif}
+.row input:focus,.row select:focus{outline:none;border-color:#8B7040}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.btn{width:100%;padding:8px 10px;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid #c9b89a;background:#faf6f0;color:#3a2810;margin-bottom:5px;text-align:center;font-family:Georgia,serif;letter-spacing:0.04em;transition:all 0.15s}
+.btn:hover{background:#e8ddd0;border-color:#8B7040}
+.btn.pri{background:#8B7040;color:#fff;border-color:#5a4020}
+.btn.pri:hover{background:#7a6030}
 .btn.dan{background:#fff0ee;color:#8a3020;border-color:#e0b0a0}
 .btn.dan:hover{background:#ffe0d8}
-.units{display:flex;border:1px solid var(--border,#c9b89a);border-radius:4px;overflow:hidden;margin-bottom:8px}
-.ubtn{flex:1;padding:5px;font-size:11px;cursor:pointer;border:none;background:transparent;color:var(--muted,#9a8060);font-family:Georgia,serif;transition:all 0.15s}
-.ubtn.active{background:var(--primary,#8B7040);color:#fff}
+.btn.info{background:#e8f0f8;color:#2a4a6a;border-color:#b0c8e8}
+.btn.info:hover{background:#d8e8f8}
+.units{display:flex;border:1px solid #c9b89a;border-radius:4px;overflow:hidden;margin-bottom:8px}
+.ubtn{flex:1;padding:6px;font-size:11px;cursor:pointer;border:none;background:transparent;color:#9a8060;font-family:Georgia,serif;transition:all 0.15s}
+.ubtn.active{background:#8B7040;color:#fff}
 .ogrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
-.obtn{padding:7px 3px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid var(--border,#c9b89a);background:var(--surface,#f5f0e8);color:var(--accent,#3a2810);text-align:center;transition:all 0.15s;font-family:Georgia,serif}
-.obtn:hover{background:var(--secondary,#f0e8d8);border-color:var(--primary,#8B7040)}
-.ilist{display:flex;flex-direction:column;gap:3px;margin-top:3px}
-.irow{display:flex;align-items:center;gap:6px;padding:6px 7px;border-radius:4px;border:1px solid var(--border,#c9b89a);background:var(--surface,#f5f0e8);font-size:10px}
-.iname{flex:1;color:var(--accent,#3a2810);line-height:1.4}
-.isub{font-size:9px;color:var(--muted,#9a8060)}
-.xbtn{padding:2px 7px;border-radius:3px;border:1px solid var(--border,#c9b89a);background:transparent;color:var(--muted,#9a8060);cursor:pointer;font-size:12px;transition:all 0.15s;flex-shrink:0}
+.obtn{padding:7px 3px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid #c9b89a;background:#faf6f0;color:#3a2810;text-align:center;transition:all 0.15s}
+.obtn:hover{background:#e8ddd0;border-color:#8B7040}
+.ilist{display:flex;flex-direction:column;gap:3px;margin-top:4px}
+.irow{display:flex;align-items:center;gap:6px;padding:6px 7px;border-radius:4px;border:1px solid #d4c4a8;background:#faf6f0;font-size:10px}
+.iname{flex:1;color:#3a2810;line-height:1.4}
+.isub{font-size:9px;color:#9a8060}
+.xbtn{padding:2px 7px;border-radius:3px;border:1px solid #c9b89a;background:transparent;color:#9a8060;cursor:pointer;font-size:12px;transition:all 0.15s;flex-shrink:0}
 .xbtn:hover{border-color:#a03020;color:#a03020}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--border,#c9b89a);background:var(--surface,#f5f0e8);flex-shrink:0}
-.stat{text-align:center;padding:8px 4px;border-right:1px solid var(--border,#c9b89a)}
+.empty{text-align:center;padding:14px 8px;color:#9a8060;font-size:10px;font-style:italic;border:1px dashed #c9b89a;border-radius:4px;margin-top:3px}
+.tip{background:#f8f4ec;border:1px solid #d4c4a8;border-radius:4px;padding:9px 10px;font-size:10px;color:#5a4020;line-height:1.6;margin-bottom:8px}
+.tip strong{color:#8B7040}
+
+/* STATS BAR */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid #c9b89a;background:#f5f0e8;flex-shrink:0}
+.stat{text-align:center;padding:7px 3px;border-right:1px solid #c9b89a}
 .stat:last-child{border-right:none}
-.sv{font-size:18px;font-weight:bold;color:var(--primary,#8B7040)}
-.slv{font-size:8px;color:var(--muted,#9a8060);letter-spacing:0.06em;text-transform:uppercase}
-.empty{text-align:center;padding:16px 8px;color:var(--muted,#9a8060);font-size:10px;font-style:italic;border:1px dashed var(--border,#c9b89a);border-radius:4px;margin-top:3px}
+.sv{font-size:16px;font-weight:bold;color:#8B7040}
+.slv{font-size:8px;color:#9a8060;letter-spacing:0.05em;text-transform:uppercase}
+
+/* CANVAS */
 .canvas-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.ctool{padding:7px 12px;background:var(--secondary,#f0e8d8);border-bottom:1px solid var(--border,#c9b89a);display:flex;align-items:center;gap:5px;flex-wrap:wrap;flex-shrink:0}
-.ctlabel{font-size:9px;color:var(--muted,#9a8060);font-style:italic;flex:1;min-width:60px}
-.tbtn{padding:4px 9px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid var(--border,#c9b89a);background:var(--surface,#f5f0e8);color:var(--accent,#3a2810);font-family:Georgia,serif;transition:all 0.15s;white-space:nowrap}
-.tbtn:hover{background:var(--secondary,#f0e8d8);border-color:var(--primary,#8B7040)}
-.tbtn.on{background:var(--primary,#8B7040);color:#fff;border-color:var(--accent,#3a2810)}
-.selbar{padding:5px 12px;background:#e8f0f8;border-bottom:1px solid #b0c8e8;font-size:10px;color:#2a4a6a;display:none;flex-shrink:0;align-items:center;gap:8px}
+.ctool{padding:7px 12px;background:#f0e8d8;border-bottom:1px solid #c9b89a;display:flex;align-items:center;gap:5px;flex-wrap:wrap;flex-shrink:0}
+.ctlabel{font-size:9px;color:#9a8060;font-style:italic;flex:1;min-width:60px}
+.tbtn{padding:4px 9px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid #c9b89a;background:#faf6f0;color:#3a2810;font-family:Georgia,serif;transition:all 0.15s;white-space:nowrap}
+.tbtn:hover{background:#e8ddd0;border-color:#8B7040}
+.tbtn.on{background:#8B7040;color:#fff;border-color:#5a4020}
+.tbtn.sight{background:#e8f0f8;color:#2a4a6a;border-color:#b0c8e8}
+.tbtn.sight:hover{background:#d8e8f8}
+.tbtn.sight.on{background:#2a4a6a;color:#fff}
+
+/* SELECTION BAR */
+.selbar{padding:5px 12px;background:#e8f0f8;border-bottom:1px solid #b0c8e8;font-size:10px;color:#2a4a6a;display:none;flex-shrink:0;align-items:center;gap:7px;flex-wrap:wrap}
 .selbar.show{display:flex}
+
+/* ROOM CANVAS */
 .cscroll{flex:1;overflow:auto;padding:20px;background:#ccc5b8}
-/* The room canvas */
-#room{position:relative;background:white;border:2px solid var(--primary,#8B7040);box-shadow:0 4px 28px rgba(0,0,0,0.18);flex-shrink:0}
+#room{position:relative;background:white;border:2px solid #8B7040;box-shadow:0 4px 28px rgba(0,0,0,0.18);flex-shrink:0;overflow:visible}
 #gridsvg{position:absolute;inset:0;pointer-events:none;z-index:1}
-.hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;color:var(--border,#c9b89a);z-index:2;white-space:nowrap}
+#sightsvg{position:absolute;inset:0;pointer-events:none;z-index:2}
+.hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;color:#d4c4a8;z-index:3;white-space:nowrap}
 .hint p{font-size:13px;margin-bottom:5px;font-style:italic}
 .hint span{font-size:10px}
-/* Item wrapper — overflow visible so resize handle shows outside */
-.item-wrap{position:absolute;z-index:10}
-.item-wrap.obs-wrap{z-index:8}
-.item-wrap.selected{z-index:20}
-.item-wrap.obs-wrap.selected{z-index:18}
-/* Table visual */
-.tbl{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:move;user-select:none}
+
+/* ITEM WRAPPERS */
+.item-wrap{position:absolute;overflow:visible;z-index:10}
+.obs-wrap{z-index:8}
+.item-wrap.selected{z-index:22}
+.obs-wrap.selected{z-index:20}
+
+/* TABLE VISUAL */
+.tbl{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:move;user-select:none;border-radius:5px}
 .tbl.round{border-radius:50%}
-.tbl.rect{border-radius:5px}
-.tlbl{font-size:9px;font-weight:bold;text-align:center;pointer-events:none;line-height:1.3;padding:0 3px;word-break:break-word}
-.tsub2{font-size:8px;pointer-events:none;margin-top:1px}
-/* Obstacle visual */
-.obs{width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:move;user-select:none;border:2px dashed #999;opacity:0.85}
-.obs.round{border-radius:50%}
-.obs.rect{border-radius:5px}
+.tlbl{font-size:8px;font-weight:bold;text-align:center;pointer-events:none;line-height:1.3;padding:0 3px;word-break:break-word}
+.tsub2{font-size:7px;pointer-events:none;margin-top:1px}
+
+/* OBSTACLE VISUAL */
+.obs-el{width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:move;user-select:none;border:2px dashed #999;border-radius:5px;opacity:0.85}
+.obs-el.round{border-radius:50%}
 .olbl{font-size:8px;font-weight:bold;text-align:center;pointer-events:none;color:#444;padding:2px;line-height:1.3}
-/* Resize handle — outside the item */
-.rh{position:absolute;width:13px;height:13px;background:#3a8fd9;border:2px solid #fff;border-radius:3px;cursor:se-resize;z-index:50;bottom:-7px;right:-7px;box-shadow:0 1px 5px rgba(0,0,0,0.4)}
-/* Rotate handle */
-.rot{position:absolute;width:13px;height:13px;background:#e08030;border:2px solid #fff;border-radius:50%;cursor:pointer;z-index:50;top:-7px;right:-7px;box-shadow:0 1px 5px rgba(0,0,0,0.4);font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;line-height:1}
-/* Selection ring */
-.item-wrap.selected .tbl,.item-wrap.selected .obs{outline:2px solid #3a8fd9;outline-offset:1px}
-.sbar{background:var(--secondary,#f0e8d8);border-top:1px solid var(--border,#c9b89a);padding:4px 12px;font-size:9px;color:var(--muted,#9a8060);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
-/* Seat dots around round tables */
-.seat-dot{position:absolute;width:6px;height:6px;background:rgba(80,50,20,0.35);border-radius:50%;pointer-events:none;z-index:3}
+
+/* HANDLES */
+.rh{position:absolute;width:12px;height:12px;background:#3a8fd9;border:2px solid #fff;border-radius:3px;cursor:se-resize;z-index:50;bottom:-7px;right:-7px;box-shadow:0 1px 5px rgba(0,0,0,0.4)}
+.rot{position:absolute;width:12px;height:12px;background:#d07020;border:2px solid #fff;border-radius:50%;cursor:pointer;z-index:50;top:-7px;right:-7px;box-shadow:0 1px 5px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;line-height:1}
+.item-wrap.selected .tbl{outline:2px solid #3a8fd9;outline-offset:2px}
+.item-wrap.selected .obs-el{outline:2px solid #3a8fd9;outline-offset:2px}
+
+/* SIGHTLINE HIGHLIGHT */
+.tbl.blocked{outline:3px solid #c0392b!important;outline-offset:2px}
+.tbl.clear{outline:2px solid #27ae60!important;outline-offset:2px}
+
+/* STATUS BAR */
+.sbar{background:#f0e8d8;border-top:1px solid #c9b89a;padding:4px 12px;font-size:9px;color:#9a8060;flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+
+/* INSTRUCTION OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(40,25,10,0.82);z-index:200;display:flex;align-items:center;justify-content:center}
+.overlay-box{background:#faf6f0;border:1px solid #c9b89a;border-radius:10px;padding:36px 40px;max-width:540px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.35)}
+.overlay-box h2{font-size:20px;font-weight:normal;letter-spacing:0.1em;color:#3a2810;margin-bottom:6px;text-align:center}
+.overlay-box p.sub{font-size:11px;color:#9a8060;text-align:center;margin-bottom:24px;letter-spacing:0.04em}
+.steps-list{list-style:none;margin-bottom:24px}
+.steps-list li{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.step-icon{width:28px;height:28px;border-radius:50%;background:#8B7040;color:#fff;font-size:12px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text strong{display:block;font-size:12px;color:#3a2810;margin-bottom:2px}
+.step-text span{font-size:10px;color:#7a6040;line-height:1.5}
 </style>
 </head>
 <body>
+
+<!-- WELCOME OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <h2>Venue Table Planner</h2>
+    <p class="sub">Wedding Design Lab &nbsp;·&nbsp; Follow these steps for the best result</p>
+    <ul class="steps-list">
+      <li><div class="step-icon">1</div><div class="step-text"><strong>Set your room dimensions</strong><span>Enter the width and length of your venue space in metres or feet</span></div></li>
+      <li><div class="step-icon">2</div><div class="step-text"><strong>Place room features &amp; obstacles</strong><span>Add pillars, dance floor, stage, bar, entry points — anything fixed in the room. Drag and resize to match your venue.</span></div></li>
+      <li><div class="step-icon">3</div><div class="step-text"><strong>Place your head table</strong><span>Choose the wall position, style and number of seats. The head table is placed first so the room layout flows from it.</span></div></li>
+      <li><div class="step-icon">4</div><div class="step-text"><strong>Auto-place guest tables</strong><span>Enter your guest count and table preference. The planner fills available space automatically, avoiding all obstacles.</span></div></li>
+      <li><div class="step-icon">5</div><div class="step-text"><strong>Fine-tune &amp; check sightlines</strong><span>Drag any table to adjust. Use Check Sightlines to confirm every table has a clear view to the head table.</span></div></li>
+    </ul>
+    <button class="btn pri" style="font-size:13px;padding:12px" onclick="startPlanning()">Begin planning your venue</button>
+  </div>
+</div>
+
 <div class="topbar">
-  <div><h1 id="tn">Wedding Design Lab</h1><p id="td">Table Planner</p></div>
-  <div class="topbar-right">Grid = 1m squares &nbsp;·&nbsp; Tables shown at true scale &nbsp;·&nbsp; Drag to move &nbsp;·&nbsp; Orange handle rotates &nbsp;·&nbsp; Blue handle resizes</div>
+  <div><h1 id="tn">Wedding Design Lab</h1><p id="td">Venue Table Planner</p></div>
+  <div class="topbar-right">Grid = 1m squares · True scale · Orange = rotate · Blue = resize</div>
 </div>
 <div class="theme-strip">
-  <span class="tlabel">THEMES →</span>
-  <div class="tswatch on" id="sw-default" style="background:#8B7040" onclick="applyTheme('default')"></div><span class="tslabel" onclick="applyTheme('default')">Classic</span>
-  <div class="tswatch" id="sw-blush" style="background:#c4788a" onclick="applyTheme('blush')"></div><span class="tslabel" onclick="applyTheme('blush')">Blush</span>
-  <div class="tswatch" id="sw-sage" style="background:#6b8c6b" onclick="applyTheme('sage')"></div><span class="tslabel" onclick="applyTheme('sage')">Sage</span>
-  <div class="tswatch" id="sw-navy" style="background:#2c3e6b" onclick="applyTheme('navy')"></div><span class="tslabel" onclick="applyTheme('navy')">Navy</span>
-  <div class="tswatch" id="sw-black" style="background:#222" onclick="applyTheme('black')"></div><span class="tslabel" onclick="applyTheme('black')">Black Tie</span>
-  <span class="prod-note">In production your couple's palette loads automatically from WDT</span>
+  <span class="thlabel">THEMES →</span>
+  <div class="tswatch on" id="sw-default" style="background:#8B7040" onclick="applyTheme('default')"></div><span class="tslbl" onclick="applyTheme('default')">Classic</span>
+  <div class="tswatch" id="sw-blush" style="background:#c4788a" onclick="applyTheme('blush')"></div><span class="tslbl" onclick="applyTheme('blush')">Blush</span>
+  <div class="tswatch" id="sw-sage" style="background:#6b8c6b" onclick="applyTheme('sage')"></div><span class="tslbl" onclick="applyTheme('sage')">Sage</span>
+  <div class="tswatch" id="sw-navy" style="background:#2c3e6b" onclick="applyTheme('navy')"></div><span class="tslbl" onclick="applyTheme('navy')">Navy</span>
+  <div class="tswatch" id="sw-black" style="background:#222" onclick="applyTheme('black')"></div><span class="tslbl" onclick="applyTheme('black')">Black Tie</span>
+  <span class="th-note">In production your couple's palette loads automatically from WDT</span>
+</div>
+
+<!-- STEP PROGRESS -->
+<div class="stepbar">
+  <div class="step active" id="step1" onclick="goStep(1)"><span class="snum">1</span><span class="stxt">Room</span></div>
+  <div class="step" id="step2" onclick="goStep(2)"><span class="snum">2</span><span class="stxt">Features</span></div>
+  <div class="step" id="step3" onclick="goStep(3)"><span class="snum">3</span><span class="stxt">Head Table</span></div>
+  <div class="step" id="step4" onclick="goStep(4)"><span class="snum">4</span><span class="stxt">Guest Tables</span></div>
+  <div class="step" id="step5" onclick="goStep(5)"><span class="snum">5</span><span class="stxt">Fine-tune</span></div>
 </div>
 
 <div class="main">
   <div class="sidebar">
-    <div class="tabs">
-      <button class="tab active" id="tab-room" onclick="showTab('room')">Room</button>
-      <button class="tab" id="tab-tables" onclick="showTab('tables')">Tables</button>
-      <button class="tab" id="tab-feat" onclick="showTab('feat')">Features</button>
-      <button class="tab" id="tab-sum" onclick="showTab('sum')">Summary</button>
-    </div>
     <div class="sbody">
 
-      <div class="pane active" id="pane-room">
+      <!-- STEP 1: ROOM -->
+      <div class="pane active" id="pane-1">
+        <div class="tip"><strong>Step 1 of 5</strong><br>Enter your venue dimensions. The floor plan will draw to true scale — 1 grid square = 1 metre.</div>
         <div class="sl">Room dimensions</div>
         <div class="g2">
           <div class="row"><label>Width</label><input type="number" id="rw" value="20" min="3" max="300" onchange="renderRoom()"></div>
@@ -144,95 +203,122 @@ body{font-family:Georgia,serif;background:#e8e0d4;color:#2c2416;height:100vh;dis
           <button class="ubtn active" id="ubtn-m" onclick="setUnit('m')">Metres</button>
           <button class="ubtn" id="ubtn-ft" onclick="setUnit('ft')">Feet</button>
         </div>
-        <div class="sl">Head table</div>
-        <div class="row"><label>Wall</label>
-          <select id="hpos"><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left wall</option><option value="right">Right wall</option></select>
+        <button class="btn pri" onclick="goStep(2)">Next — Add room features →</button>
+      </div>
+
+      <!-- STEP 2: FEATURES -->
+      <div class="pane" id="pane-2">
+        <div class="tip"><strong>Step 2 of 5 — Room features &amp; obstacles</strong><br>Add anything fixed in your venue. Drag to position. Drag the <strong>blue handle</strong> to resize to actual size. These will be avoided when placing tables.</div>
+        <div class="sl">Add feature</div>
+        <div class="ogrid">
+          <button class="obtn" onclick="addObs('pillar','Pillar','c')">⬤ Pillar</button>
+          <button class="obtn" onclick="addObs('wall','Wall','r')">▬ Wall</button>
+          <button class="obtn" onclick="addObs('dance','Dance floor','r')">♪ Dance floor</button>
+          <button class="obtn" onclick="addObs('stage','Stage','r')">▲ Stage</button>
+          <button class="obtn" onclick="addObs('bar','Bar','r')">🍸 Bar</button>
+          <button class="obtn" onclick="addObs('buffet','Buffet','r')">🍽 Buffet</button>
+          <button class="obtn" onclick="addObs('gift','Gift table','r')">🎁 Gift table</button>
+          <button class="obtn" onclick="addObs('photo','Photo booth','r')">📷 Photo booth</button>
+          <button class="obtn" onclick="addObs('entry','Entry / exit','r')">🚪 Entry</button>
+          <button class="obtn" onclick="addObs('kitchen','Service entry','r')">👨‍🍳 Service</button>
+        </div>
+        <div class="sl">Features placed</div>
+        <div class="ilist" id="olist"><div class="empty">No features yet</div></div>
+        <div style="margin-top:10px">
+          <button class="btn pri" onclick="goStep(3)">Next — Place head table →</button>
+          <button class="btn" onclick="goStep(1)">← Back</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: HEAD TABLE -->
+      <div class="pane" id="pane-3">
+        <div class="tip"><strong>Step 3 of 5 — Head table</strong><br>The head table anchors your layout. Place it first — guest tables will be arranged around it.</div>
+        <div class="sl">Head table settings</div>
+        <div class="row"><label>Wall position</label>
+          <select id="hpos"><option value="top">Top of room</option><option value="bottom">Bottom of room</option><option value="left">Left wall</option><option value="right">Right wall</option></select>
         </div>
         <div class="row"><label>Style</label>
           <select id="hstyle"><option value="rect">Rectangular (traditional)</option><option value="round">Round</option><option value="sweep">Sweetheart — 2 seats</option></select>
         </div>
-        <div class="row"><label>Seats</label>
+        <div class="row"><label>Seats at head table</label>
           <select id="hseats"><option value="4">4</option><option value="6">6</option><option value="8" selected>8</option><option value="10">10</option><option value="12">12</option><option value="16">16</option><option value="20">20</option></select>
         </div>
-        <button class="btn pri" onclick="placeHead()">Place head table</button>
-        <div class="sl">Auto-optimise guest tables</div>
-        <div class="row"><label>Total guests (excl. head table)</label><input type="number" id="og" value="80" min="2" max="2000"></div>
+        <button class="btn pri" onclick="placeHead()">Place head table on plan</button>
+        <div class="sl">Head table on plan</div>
+        <div class="ilist" id="htlist"><div class="empty">Not placed yet</div></div>
+        <div style="margin-top:10px">
+          <button class="btn pri" onclick="goStep(4)" id="btn-to-step4" style="opacity:0.4;pointer-events:none">Next — Place guest tables →</button>
+          <button class="btn" onclick="goStep(2)">← Back</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: GUEST TABLES -->
+      <div class="pane" id="pane-4">
+        <div class="tip"><strong>Step 4 of 5 — Guest tables</strong><br>The planner calculates exactly how many tables you need and fills the available floor space — avoiding all features and the head table.</div>
+        <div class="sl">Guest count &amp; table preference</div>
+        <div class="row"><label>Total guests (excluding head table)</label><input type="number" id="og" value="80" min="2" max="2000"></div>
         <div class="row"><label>Table shape</label>
-          <select id="oshape"><option value="round">Round only</option><option value="rect">Rectangular only</option><option value="mixed">Mixed</option></select>
+          <select id="oshape"><option value="round">Round tables</option><option value="rect">Rectangular tables</option><option value="mixed">Mixed — round &amp; rectangular</option></select>
         </div>
         <div class="row"><label>Seats per table</label>
           <select id="os"><option value="6">6 per table</option><option value="8" selected>8 per table</option><option value="10">10 per table</option><option value="mixed68">Mixed 6 &amp; 8</option><option value="mixed810">Mixed 8 &amp; 10</option></select>
         </div>
-        <div class="row"><label>Aisle width</label>
+        <div class="row"><label>Aisle width between tables</label>
           <select id="aisle"><option value="1.2">1.2m — Cosy</option><option value="1.5" selected>1.5m — Comfortable</option><option value="1.8">1.8m — Generous</option><option value="2.0">2.0m — Wide</option></select>
         </div>
-        <button class="btn pri" onclick="optimise()">Optimise layout</button>
-        <button class="btn dan" onclick="clearAll()">Clear entire plan</button>
+        <div id="table-calc" style="background:#f8f4ec;border:1px solid #d4c4a8;border-radius:4px;padding:8px 10px;font-size:10px;color:#5a4020;margin-bottom:8px;display:none"></div>
+        <button class="btn pri" onclick="optimise()">Auto-place guest tables</button>
+        <button class="btn dan" onclick="clearGuestTables()">Clear guest tables</button>
+        <div style="margin-top:6px">
+          <button class="btn pri" onclick="goStep(5)">Next — Fine-tune →</button>
+          <button class="btn" onclick="goStep(3)">← Back</button>
+        </div>
       </div>
 
-      <div class="pane" id="pane-tables">
-        <div class="sl">Add a table manually</div>
-        <div class="row"><label>Name</label><input type="text" id="tname" placeholder="Table 1, Family…"></div>
-        <div class="g2">
-          <div class="row"><label>Shape</label><select id="tshape"><option value="round">Round</option><option value="rect">Rectangular</option></select></div>
-          <div class="row"><label>Seats</label><select id="tseats"><option value="4">4</option><option value="6">6</option><option value="8" selected>8</option><option value="10">10</option><option value="12">12</option></select></div>
-        </div>
-        <button class="btn pri" onclick="addTable()">Add to floor plan</button>
-        <div class="sl">Tables on plan</div>
+      <!-- STEP 5: FINE TUNE -->
+      <div class="pane" id="pane-5">
+        <div class="tip"><strong>Step 5 of 5 — Fine-tune your layout</strong><br>Drag any table to adjust its position. Use <strong>Check sightlines</strong> to verify every table has a clear view to the head table. <span style="color:#c0392b">Red = blocked</span> &nbsp; <span style="color:#27ae60">Green = clear</span></div>
+        <div class="sl">Sightline check</div>
+        <button class="btn info" onclick="checkSightlines()">Check sightlines to head table</button>
+        <button class="btn" onclick="clearSightlines()">Clear sightlines</button>
+        <div class="sl">All tables</div>
         <div class="ilist" id="tlist"><div class="empty">No tables yet</div></div>
-      </div>
-
-      <div class="pane" id="pane-feat">
-        <div class="sl">Add room feature</div>
-        <div class="ogrid">
-          <button class="obtn" onclick="addObs('pillar','Pillar','c')">⬤ Pillar</button>
-          <button class="obtn" onclick="addObs('wall','Wall','r')">▬ Wall</button>
-          <button class="obtn" onclick="addObs('dance','Dance floor','r')">♪ Dance</button>
-          <button class="obtn" onclick="addObs('stage','Stage','r')">▲ Stage</button>
-          <button class="obtn" onclick="addObs('bar','Bar','r')">🍸 Bar</button>
-          <button class="obtn" onclick="addObs('buffet','Buffet','r')">🍽 Buffet</button>
-          <button class="obtn" onclick="addObs('gift','Gift table','r')">🎁 Gifts</button>
-          <button class="obtn" onclick="addObs('photo','Photo booth','r')">📷 Photo</button>
-          <button class="obtn" onclick="addObs('entry','Entry/exit','r')">🚪 Entry</button>
-          <button class="obtn" onclick="addObs('kitchen','Service','r')">👨‍🍳 Service</button>
-        </div>
-        <p style="font-size:9px;color:var(--muted,#9a8060);font-style:italic;margin-bottom:6px;line-height:1.5">Blue handle = resize &nbsp;·&nbsp; Orange handle = rotate &nbsp;·&nbsp; Drag to move</p>
-        <div class="sl">Features on plan</div>
-        <div class="ilist" id="olist"><div class="empty">No features yet</div></div>
-      </div>
-
-      <div class="pane" id="pane-sum">
-        <div class="sl">Seating summary</div>
-        <div id="sumtext" style="font-size:10px;line-height:2;color:var(--accent,#3a2810)"></div>
-        <div class="sl" style="margin-top:14px">Export</div>
+        <div class="sl" style="margin-top:10px">Summary</div>
+        <div id="sumtext" style="font-size:10px;color:#3a2810;line-height:1.9"></div>
+        <div class="sl" style="margin-top:10px">Export</div>
         <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+        <button class="btn dan" onclick="clearAll()" style="margin-top:4px">Clear entire plan</button>
       </div>
+
     </div>
     <div class="stats">
       <div class="stat"><div class="sv" id="st">0</div><div class="slv">Tables</div></div>
       <div class="stat"><div class="sv" id="ss">0</div><div class="slv">Seats</div></div>
       <div class="stat"><div class="sv" id="sf">0</div><div class="slv">Features</div></div>
+      <div class="stat"><div class="sv" id="sg" style="color:#c0392b">—</div><div class="slv">Sightlines</div></div>
     </div>
   </div>
 
   <div class="canvas-wrap">
     <div class="ctool">
-      <span class="ctlabel">True scale · 1 grid square = 1 metre · Drag items to arrange</span>
-      <button class="tbtn" onclick="zi()">＋ Zoom</button>
-      <button class="tbtn" onclick="zo()">－ Zoom</button>
+      <span class="ctlabel" id="ctlabel">Step 1 — Set room dimensions in the panel</span>
+      <button class="tbtn" onclick="zi()">＋</button>
+      <button class="tbtn" onclick="zo()">－</button>
       <button class="tbtn" onclick="zr()">1:1</button>
-      <button class="tbtn on" id="gridbtn" onclick="toggleGrid()">Grid on</button>
+      <button class="tbtn on" id="gridbtn" onclick="toggleGrid()">Grid</button>
+      <button class="tbtn sight" id="sightbtn" onclick="checkSightlines()">Check sightlines</button>
     </div>
     <div class="selbar" id="selbar">
       <span id="selinfo"></span>
-      <button class="tbtn" onclick="rotateSelected()">↻ Rotate 90°</button>
-      <button class="tbtn" onclick="deleteSelected()" style="background:#fff0ee;color:#8a3020;border-color:#e0b0a0">Delete</button>
-      <button class="tbtn" onclick="clearSel()">Deselect</button>
+      <button class="tbtn" onclick="rotSel()">↻ Rotate</button>
+      <button class="tbtn" onclick="delSel()" style="background:#fff0ee;color:#8a3020;border-color:#e0b0a0">Delete</button>
+      <button class="tbtn" onclick="clearSel()">✕ Deselect</button>
     </div>
-    <div class="cscroll" id="cscroll">
+    <div class="cscroll">
       <div id="room">
         <svg id="gridsvg"></svg>
-        <div class="hint" id="hint"><p id="hintp">Your venue floor plan</p><span>Set dimensions · Add head table · Optimise</span></div>
+        <svg id="sightsvg"></svg>
+        <div class="hint" id="hint"><p id="hintp">Your venue floor plan</p><span>Follow the steps in the left panel</span></div>
       </div>
     </div>
     <div class="sbar"><span id="sdim">20m × 15m</span><span id="szoom">Zoom 100%</span><span id="ssel" style="color:#3a8fd9;font-style:italic"></span></div>
@@ -240,60 +326,70 @@ body{font-family:Georgia,serif;background:#e8e0d4;color:#2c2416;height:100vh;dis
 </div>
 
 <script>
-// ─── TRUE SCALE CONSTANTS ───────────────────────────────────────────────────
-// Round tables: diameter based on 60cm per person around circumference
-// rect head tables: 60cm per person width, one side only, 75cm depth
-var ROUND_D = {2:0.8, 4:1.1, 6:1.4, 8:1.7, 10:2.0, 12:2.3};
-// Rect: w = seats * 0.60, h = 0.75 (one side seating)
-function rectW(seats){ return seats * 0.60; }
-var RECT_H = 0.75;
+// ─── THEMES ──────────────────────────────────────────────────────────────────
+var THEMES={
+  default:{primary:'#8B7040',secondary:'#f0e8d8',accent:'#3a2810',surface:'#f5f0e8',border:'#c9b89a',muted:'#9a8060',tg:'#d4c4a0',tb:'#a89060',tt:'#3a2010',gridLine:'#e8dfd0',gridMajor:'#c9b89a',name1:'Wedding',name2:'Design Lab',date:'Your Wedding'},
+  blush:{primary:'#c4788a',secondary:'#fdf0f2',accent:'#7a3045',surface:'#fdf5f6',border:'#e8c0c8',muted:'#b08090',tg:'#f0c8d0',tb:'#d4a0a8',tt:'#5a2030',gridLine:'#f5e0e4',gridMajor:'#e0b8c0',name1:'Sarah',name2:'James',date:'14 March 2026'},
+  sage:{primary:'#6b8c6b',secondary:'#f0f4f0',accent:'#2a3d2a',surface:'#f4f6f4',border:'#b0c8b0',muted:'#7a9a7a',tg:'#c0d8c0',tb:'#90b090',tt:'#1a3020',gridLine:'#dceadc',gridMajor:'#b8d0b8',name1:'Emma',name2:'Oliver',date:'21 June 2026'},
+  navy:{primary:'#2c3e6b',secondary:'#f0f2f8',accent:'#1a2440',surface:'#f4f5f8',border:'#b0b8d0',muted:'#6a7898',tg:'#c0c8e0',tb:'#9098c0',tt:'#1a2440',gridLine:'#dce0ee',gridMajor:'#b8bedd',name1:'Charlotte',name2:'William',date:'5 Sep 2026'},
+  black:{primary:'#222',secondary:'#f8f8f8',accent:'#000',surface:'#f6f6f6',border:'#ccc',muted:'#888',tg:'#ddd',tb:'#aaa',tt:'#111',gridLine:'#eee',gridMajor:'#ccc',name1:'Victoria',name2:'Alexander',date:'31 Oct 2026'}
+};
+var T=THEMES.default;
 
 var OBS_DEF={pillar:{w:0.6,h:0.6},wall:{w:4,h:0.25},dance:{w:5,h:4},stage:{w:6,h:1.8},bar:{w:3,h:1.2},buffet:{w:5,h:1.2},gift:{w:1.8,h:0.9},photo:{w:2.4,h:2.4},entry:{w:1.8,h:0.5},kitchen:{w:3,h:1.2}};
 var OBS_COL={pillar:'#909090',wall:'#b4b4b4',dance:'#b0d0f0',stage:'#e8d0a0',bar:'#a8d4a0',buffet:'#f0e4a0',gift:'#f0b0c8',photo:'#c8b0f0',entry:'#c0c0c0',kitchen:'#f0c8a0'};
+var ROUND_D={2:0.8,4:1.1,6:1.4,8:1.7,10:2.0,12:2.3};
 
-// ─── STATE ──────────────────────────────────────────────────────────────────
+// ─── STATE ───────────────────────────────────────────────────────────────────
 var tables=[],obs=[],tid=0,oid=0,unit='m',zoom=1,PPM=40;
-var rw=20,rl=15,showGrid=true,selId=null,selType=null;
+var rw=20,rl=15,showGrid=true,selId=null,selType=null,curStep=1;
 
-// ─── THEME ──────────────────────────────────────────────────────────────────
+// ─── OVERLAY ─────────────────────────────────────────────────────────────────
+function startPlanning(){document.getElementById('overlay').style.display='none';}
+
+// ─── THEME ───────────────────────────────────────────────────────────────────
 function applyTheme(name){
   T=THEMES[name]||THEMES.default;
-  var r=document.documentElement.style;
-  ['primary','secondary','accent','surface','border','muted'].forEach(function(k){r.setProperty('--'+k,T[k]);});
   document.getElementById('tn').textContent=T.name1+' & '+T.name2;
   document.getElementById('td').textContent=T.date+' — Table Planner';
   document.getElementById('hintp').textContent=T.name1+' & '+T.name2+' — Venue Floor Plan';
-  Object.keys(THEMES).forEach(function(k){var el=document.getElementById('sw-'+k);if(el)el.className='tswatch'+(k===name?' on':'');});
-  tables.forEach(recolour);
-  drawGrid();
+  Object.keys(THEMES).forEach(function(k){var e=document.getElementById('sw-'+k);if(e)e.className='tswatch'+(k===name?' on':'');});
+  tables.forEach(recolour);drawGrid();
 }
 function recolour(t){
-  var el=document.getElementById('v'+t.eid);if(!el)return;
-  el.style.background=t.head?T.primary:T.tableGuest;
-  el.style.borderColor=t.head?T.accent:T.tableBorder;
-  var lb=el.querySelector('.tlbl');if(lb)lb.style.color=t.head?'#fff':T.tableText;
-  var sb=el.querySelector('.tsub2');if(sb)sb.style.color=t.head?'rgba(255,255,255,0.7)':T.muted;
+  var v=document.getElementById('v'+t.eid);if(!v)return;
+  v.style.background=t.head?T.primary:T.tg;
+  v.style.borderColor=t.head?T.accent:T.tb;
+  var lb=v.querySelector('.tlbl');if(lb)lb.style.color=t.head?'#fff':T.tt;
+  var sb=v.querySelector('.tsub2');if(sb)sb.style.color=t.head?'rgba(255,255,255,0.65)':T.muted;
 }
 
-// ─── TABS ───────────────────────────────────────────────────────────────────
-function showTab(n){
-  ['room','tables','feat','sum'].forEach(function(x){
-    document.getElementById('tab-'+x).className='tab'+(x===n?' active':'');
-    document.getElementById('pane-'+x).className='pane'+(x===n?' active':'');
-  });
-  if(n==='sum')updateSum();
+// ─── STEP NAV ────────────────────────────────────────────────────────────────
+var stepLabels=['Set room dimensions in the panel','Add room features — drag and resize to fit your venue','Place the head table','Set guest count and auto-place tables','Drag tables to fine-tune · Check sightlines'];
+function goStep(n){
+  curStep=n;
+  for(var i=1;i<=5;i++){
+    var el=document.getElementById('step'+i);
+    el.className='step'+(i===n?' active':i<n?' done':'');
+    document.getElementById('pane-'+i).className='pane'+(i===n?' active':'');
+  }
+  document.getElementById('ctlabel').textContent='Step '+n+' — '+stepLabels[n-1];
+  if(n===5)updateFullList();
 }
 
-// ─── UNITS ──────────────────────────────────────────────────────────────────
+// ─── UNITS ───────────────────────────────────────────────────────────────────
 function setUnit(u){unit=u;document.getElementById('ubtn-m').className='ubtn'+(u==='m'?' active':'');document.getElementById('ubtn-ft').className='ubtn'+(u==='ft'?' active':'');updateSbar();}
 
-// ─── ROOM ───────────────────────────────────────────────────────────────────
+// ─── ROOM ────────────────────────────────────────────────────────────────────
 function getDims(){rw=parseFloat(document.getElementById('rw').value)||20;rl=parseFloat(document.getElementById('rl').value)||15;}
 function px(m){return m*PPM*zoom;}
 function renderRoom(){
   getDims();
   var r=document.getElementById('room');
   r.style.width=Math.round(px(rw))+'px';r.style.height=Math.round(px(rl))+'px';
+  var gs=document.getElementById('gridsvg'),ss=document.getElementById('sightsvg');
+  var pw=Math.round(px(rw)),ph=Math.round(px(rl));
+  [gs,ss].forEach(function(g){g.setAttribute('width',pw);g.setAttribute('height',ph);g.style.width=pw+'px';g.style.height=ph+'px';});
   drawGrid();tables.forEach(posT);obs.forEach(posO);updateSbar();
 }
 function drawGrid(){
@@ -301,41 +397,27 @@ function drawGrid(){
   g.setAttribute('width',pw);g.setAttribute('height',ph);g.style.width=pw+'px';g.style.height=ph+'px';
   if(!showGrid){g.innerHTML='';return;}
   var step=PPM*zoom,s='',i;
-  for(i=step;i<pw;i+=step){var mj=Math.round(i/step)%5===0;s+='<line x1="'+i+'" y1="0" x2="'+i+'" y2="'+ph+'" stroke="'+(mj?T.gridMajor:T.gridLine)+'" stroke-width="'+(mj?0.7:0.3)+'"/>';}
-  for(i=step;i<ph;i+=step){var mjy=Math.round(i/step)%5===0;s+='<line x1="0" y1="'+i+'" x2="'+pw+'" y2="'+i+'" stroke="'+(mjy?T.gridMajor:T.gridLine)+'" stroke-width="'+(mjy?0.7:0.3)+'"/>';}
+  for(i=step;i<pw;i+=step){var mj=Math.round(i/step)%5===0;s+='<line x1="'+i+'" y1="0" x2="'+i+'" y2="'+ph+'" stroke="'+(mj?T.gridMajor:T.gridLine)+'" stroke-width="'+(mj?0.6:0.3)+'"/>';}
+  for(i=step;i<ph;i+=step){var mjy=Math.round(i/step)%5===0;s+='<line x1="0" y1="'+i+'" x2="'+pw+'" y2="'+i+'" stroke="'+(mjy?T.gridMajor:T.gridLine)+'" stroke-width="'+(mjy?0.6:0.3)+'"/>';}
   for(var lx=5;lx<=rw;lx+=5){var ux=unit==='m'?lx:Math.round(lx*3.281);s+='<text x="'+Math.round(px(lx))+'" y="11" font-size="8" fill="'+T.gridMajor+'" font-family="Georgia" text-anchor="middle">'+ux+(unit==='m'?'m':'ft')+'</text>';}
   for(var ly=5;ly<=rl;ly+=5){var uy=unit==='m'?ly:Math.round(ly*3.281);s+='<text x="10" y="'+(Math.round(px(ly))+4)+'" font-size="8" fill="'+T.gridMajor+'" font-family="Georgia">'+uy+(unit==='m'?'m':'ft')+'</text>';}
   g.innerHTML=s;
 }
-function toggleGrid(){showGrid=!showGrid;var b=document.getElementById('gridbtn');b.className='tbtn'+(showGrid?' on':'');b.textContent='Grid '+(showGrid?'on':'off');drawGrid();}
-function updateSbar(){
-  var w=unit==='m'?rw:Math.round(rw*3.281),l=unit==='m'?rl:Math.round(rl*3.281),u=unit==='m'?'m':'ft';
-  document.getElementById('sdim').textContent=w+u+' × '+l+u;
-  document.getElementById('szoom').textContent='Zoom '+Math.round(zoom*100)+'%';
-}
+function toggleGrid(){showGrid=!showGrid;var b=document.getElementById('gridbtn');b.className='tbtn'+(showGrid?' on':'');b.textContent=showGrid?'Grid':'Grid off';drawGrid();}
+function updateSbar(){var w=unit==='m'?rw:Math.round(rw*3.281),l=unit==='m'?rl:Math.round(rl*3.281),u=unit==='m'?'m':'ft';document.getElementById('sdim').textContent=w+u+' × '+l+u;document.getElementById('szoom').textContent='Zoom '+Math.round(zoom*100)+'%';}
 
-// ─── TABLE SIZING (TRUE SCALE) ───────────────────────────────────────────────
+// ─── TABLE SIZE (TRUE SCALE) ──────────────────────────────────────────────────
 function tsize(seats,shape,rotated){
   var w,h;
   if(shape==='round'){var d=ROUND_D[seats]||1.7;w=d;h=d;}
-  else{w=rectW(seats);h=RECT_H;}
+  else{w=seats*0.60;h=0.75;}
   if(rotated){return{w:h,h:w};}
   return{w:w,h:h};
 }
 
-// ─── POSITION ───────────────────────────────────────────────────────────────
-function posT(t){
-  var wrap=document.getElementById(t.eid);if(!wrap)return;
-  wrap.style.left=Math.round(px(t.x))+'px';wrap.style.top=Math.round(px(t.y))+'px';
-  wrap.style.width=Math.round(px(t.w))+'px';wrap.style.height=Math.round(px(t.h))+'px';
-  var v=document.getElementById('v'+t.eid);if(v){v.style.borderRadius=t.shape==='round'?'50%':'5px';}
-}
-function posO(o){
-  var wrap=document.getElementById(o.eid);if(!wrap)return;
-  wrap.style.left=Math.round(px(o.x))+'px';wrap.style.top=Math.round(px(o.y))+'px';
-  wrap.style.width=Math.round(px(o.w))+'px';wrap.style.height=Math.round(px(o.h))+'px';
-  var v=document.getElementById('v'+o.eid);if(v){v.style.borderRadius=o.shape==='c'?'50%':'5px';}
-}
+// ─── POSITION ────────────────────────────────────────────────────────────────
+function posT(t){var wrap=document.getElementById(t.eid);if(!wrap)return;wrap.style.left=Math.round(px(t.x))+'px';wrap.style.top=Math.round(px(t.y))+'px';wrap.style.width=Math.round(px(t.w))+'px';wrap.style.height=Math.round(px(t.h))+'px';}
+function posO(o){var wrap=document.getElementById(o.eid);if(!wrap)return;wrap.style.left=Math.round(px(o.x))+'px';wrap.style.top=Math.round(px(o.y))+'px';wrap.style.width=Math.round(px(o.w))+'px';wrap.style.height=Math.round(px(o.h))+'px';}
 
 // ─── SELECTION ───────────────────────────────────────────────────────────────
 function setSel(id,type){
@@ -349,33 +431,30 @@ function setSel(id,type){
   sb.className='selbar show';
 }
 function clearSel(){setSel(null,null);}
-function deleteSelected(){
+function delSel(){
   if(!selId)return;
-  if(selType==='table'){var t=tables.find(function(x){return x.eid===selId;});if(t){var e=document.getElementById(t.eid);if(e)e.remove();tables=tables.filter(function(x){return x.eid!==selId;});renderTList();updateStats();}}
+  if(selType==='table'){var t=tables.find(function(x){return x.eid===selId;});if(t){var e=document.getElementById(t.eid);if(e)e.remove();tables=tables.filter(function(x){return x.eid!==selId;});updateAllLists();updateStats();}}
   else{var o=obs.find(function(x){return x.eid===selId;});if(o){var e2=document.getElementById(o.eid);if(e2)e2.remove();obs=obs.filter(function(x){return x.eid!==selId;});renderOList();updateStats();}}
   setSel(null,null);
 }
-function rotateSelected(){
+function rotSel(){
   if(!selId||selType!=='table')return;
   var t=tables.find(function(x){return x.eid===selId;});if(!t)return;
-  t.rotated=!t.rotated;
-  var tmp=t.w;t.w=t.h;t.h=tmp;
-  posT(t);
+  t.rotated=!t.rotated;var tmp=t.w;t.w=t.h;t.h=tmp;posT(t);
 }
 
-// ─── DRAG ───────────────────────────────────────────────────────────────────
-function makeDraggable(wrap,item){
-  var vEl=document.getElementById('v'+item.eid);
-  var dragEl=vEl||wrap;
-  dragEl.addEventListener('mousedown',function(e){
+// ─── DRAG ────────────────────────────────────────────────────────────────────
+function makeDraggable(wrap,item,type){
+  var vEl=document.getElementById('v'+item.eid)||wrap;
+  vEl.addEventListener('mousedown',function(e){
     if(e.target.classList.contains('rh')||e.target.classList.contains('rot'))return;
     e.preventDefault();e.stopPropagation();
-    setSel(wrap.id,item._type);
-    var sx=e.clientX,sy=e.clientY,sleft=item.x*PPM*zoom,stop=item.y*PPM*zoom;
+    setSel(wrap.id,type);
+    var sx=e.clientX,sy=e.clientY,sl=item.x*PPM*zoom,st=item.y*PPM*zoom;
     var rm=document.getElementById('room');
     function mv(ev){
-      var nl=Math.max(0,Math.min(rm.offsetWidth-wrap.offsetWidth,sleft+(ev.clientX-sx)));
-      var nt=Math.max(0,Math.min(rm.offsetHeight-wrap.offsetHeight,stop+(ev.clientY-sy)));
+      var nl=Math.max(0,Math.min(rm.offsetWidth-wrap.offsetWidth,sl+(ev.clientX-sx)));
+      var nt=Math.max(0,Math.min(rm.offsetHeight-wrap.offsetHeight,st+(ev.clientY-sy)));
       item.x=nl/(PPM*zoom);item.y=nt/(PPM*zoom);
       wrap.style.left=Math.round(nl)+'px';wrap.style.top=Math.round(nt)+'px';
     }
@@ -384,7 +463,7 @@ function makeDraggable(wrap,item){
   });
 }
 
-// ─── RESIZE ─────────────────────────────────────────────────────────────────
+// ─── RESIZE ──────────────────────────────────────────────────────────────────
 function makeResizable(wrap,item,keepSquare){
   var rh=wrap.querySelector('.rh');if(!rh)return;
   rh.addEventListener('mousedown',function(e){
@@ -401,178 +480,243 @@ function makeResizable(wrap,item,keepSquare){
   });
 }
 
-// ─── CREATE ELEMENTS ────────────────────────────────────────────────────────
+// ─── CREATE ELEMENTS ─────────────────────────────────────────────────────────
 function mkTableEl(t){
-  t._type='table';
   var wrap=document.createElement('div');
   wrap.className='item-wrap';wrap.id=t.eid;
   wrap.style.cssText='position:absolute;left:'+Math.round(px(t.x))+'px;top:'+Math.round(px(t.y))+'px;width:'+Math.round(px(t.w))+'px;height:'+Math.round(px(t.h))+'px;overflow:visible';
-  var bg=t.head?T.primary:T.tableGuest;
-  var bc=t.head?T.accent:T.tableBorder;
-  var tc=t.head?'#fff':T.tableText;
-  var sc=t.head?'rgba(255,255,255,0.65)':T.muted;
+  var bg=t.head?T.primary:T.tg,bc=t.head?T.accent:T.tb,tc=t.head?'#fff':T.tt,sc=t.head?'rgba(255,255,255,0.65)':T.muted;
   var v=document.createElement('div');
-  v.className='tbl '+(t.shape==='round'?'round':'rect');
-  v.id='v'+t.eid;
-  v.style.cssText='background:'+bg+';border:2px solid '+bc+';box-shadow:0 1px 5px rgba(0,0,0,0.10)';
+  v.className='tbl'+(t.shape==='round'?' round':'');v.id='v'+t.eid;
+  v.style.cssText='background:'+bg+';border:2px solid '+bc+';box-shadow:0 1px 5px rgba(0,0,0,0.1)';
   v.innerHTML='<div class="tlbl" style="color:'+tc+'">'+t.name+'</div><div class="tsub2" style="color:'+sc+'">'+t.seats+' seats</div>';
   wrap.appendChild(v);
-  // Resize handle
   var rh=document.createElement('div');rh.className='rh';wrap.appendChild(rh);
-  // Rotate handle (tables only)
   var rot=document.createElement('div');rot.className='rot';rot.textContent='↻';rot.title='Rotate 90°';
-  rot.addEventListener('click',function(e){e.stopPropagation();setSel(wrap.id,'table');rotateSelected();});
+  rot.addEventListener('click',function(e){e.stopPropagation();setSel(wrap.id,'table');rotSel();});
   wrap.appendChild(rot);
-  makeDraggable(wrap,t);
-  makeResizable(wrap,t,t.shape==='round');
+  makeDraggable(wrap,t,'table');makeResizable(wrap,t,t.shape==='round');
   return wrap;
 }
-
 function mkObsEl(o){
-  o._type='obs';
   var wrap=document.createElement('div');
   wrap.className='item-wrap obs-wrap';wrap.id=o.eid;
   wrap.style.cssText='position:absolute;left:'+Math.round(px(o.x))+'px;top:'+Math.round(px(o.y))+'px;width:'+Math.round(px(o.w))+'px;height:'+Math.round(px(o.h))+'px;overflow:visible';
   var v=document.createElement('div');
-  v.className='obs '+(o.shape==='c'?'round':'rect');
-  v.id='v'+o.eid;
+  v.className='obs-el'+(o.shape==='c'?' round':'');v.id='v'+o.eid;
   v.style.background=OBS_COL[o.type]||'#ccc';
   v.innerHTML='<div class="olbl">'+o.name+'</div>';
   wrap.appendChild(v);
   var rh=document.createElement('div');rh.className='rh';wrap.appendChild(rh);
-  makeDraggable(wrap,o);
-  makeResizable(wrap,o,o.shape==='c');
+  makeDraggable(wrap,o,'obs');makeResizable(wrap,o,o.shape==='c');
   return wrap;
 }
 
-// ─── ADD TABLE ───────────────────────────────────────────────────────────────
-function addTable(){
-  var name=document.getElementById('tname').value.trim()||('Table '+(tid+1));
-  var shape=document.getElementById('tshape').value;
-  var seats=parseInt(document.getElementById('tseats').value)||8;
-  var sz=tsize(seats,shape,false);
-  tid++;
-  var t={id:tid,eid:'t'+tid,name:name,shape:shape,seats:seats,w:sz.w,h:sz.h,x:1,y:1,rotated:false,head:false};
-  tables.push(t);
-  document.getElementById('room').appendChild(mkTableEl(t));
-  document.getElementById('hint').style.display='none';
-  document.getElementById('tname').value='';
-  renderTList();updateStats();
-}
-
-// ─── ADD OBSTACLE ────────────────────────────────────────────────────────────
+// ─── ADD OBSTACLE ─────────────────────────────────────────────────────────────
 function addObs(type,name,shape){
-  var sz=OBS_DEF[type]||{w:2,h:1};
-  oid++;
-  var o={id:oid,eid:'o'+oid,type:type,name:name,shape:shape,w:sz.w,h:sz.h,x:1+Math.random()*3,y:1+Math.random()*2};
-  o._type='obs';
+  var sz=OBS_DEF[type]||{w:2,h:1};oid++;
+  var o={id:oid,eid:'o'+oid,type:type,name:name,shape:shape,w:sz.w,h:sz.h,x:1+Math.random()*4,y:1+Math.random()*3};
   obs.push(o);
   document.getElementById('room').appendChild(mkObsEl(o));
   document.getElementById('hint').style.display='none';
   renderOList();updateStats();
 }
 
-// ─── PLACE HEAD TABLE ────────────────────────────────────────────────────────
+// ─── PLACE HEAD TABLE ─────────────────────────────────────────────────────────
 function placeHead(){
   getDims();
   var pos=document.getElementById('hpos').value;
   var style=document.getElementById('hstyle').value;
   var seats=style==='sweep'?2:parseInt(document.getElementById('hseats').value)||8;
   var shape=style==='round'?'round':'rect';
-  // Auto-rotate for left/right walls
   var rotated=(pos==='left'||pos==='right')&&shape==='rect';
   var old=tables.find(function(t){return t.head;});
   if(old){var oe=document.getElementById(old.eid);if(oe)oe.remove();tables=tables.filter(function(t){return!t.head;});}
   var sz=tsize(seats,shape,rotated);
   var x,y;
-  if(pos==='top'){x=rw/2-sz.w/2;y=0.5;}
-  else if(pos==='bottom'){x=rw/2-sz.w/2;y=rl-sz.h-0.5;}
-  else if(pos==='left'){x=0.4;y=rl/2-sz.h/2;}
-  else{x=rw-sz.w-0.4;y=rl/2-sz.h/2;}
+  if(pos==='top'){x=rw/2-sz.w/2;y=0.4;}
+  else if(pos==='bottom'){x=rw/2-sz.w/2;y=rl-sz.h-0.4;}
+  else if(pos==='left'){x=0.3;y=rl/2-sz.h/2;}
+  else{x=rw-sz.w-0.3;y=rl/2-sz.h/2;}
   tid++;
   var tname=style==='sweep'?'Sweetheart Table':'Head Table';
   var t={id:tid,eid:'t'+tid,name:tname,shape:shape,seats:seats,w:sz.w,h:sz.h,x:x,y:y,rotated:rotated,head:true};
   tables.push(t);
   document.getElementById('room').appendChild(mkTableEl(t));
   document.getElementById('hint').style.display='none';
-  renderTList();updateStats();
+  document.getElementById('htlist').innerHTML='<div class="irow"><div class="iname">'+tname+'<br><span class="isub">'+seats+' seats · '+shape+'</span></div></div>';
+  var nb=document.getElementById('btn-to-step4');nb.style.opacity='1';nb.style.pointerEvents='auto';
+  updateStats();
 }
 
-// ─── OPTIMISE ────────────────────────────────────────────────────────────────
+// ─── GRID-BASED OBSTACLE AVOIDANCE ───────────────────────────────────────────
+// Divide room into 0.5m cells, mark blocked cells, place tables in free zones
+function buildOccupancyGrid(cellM, excludeGuestTables){
+  var cols=Math.ceil(rw/cellM),rows=Math.ceil(rl/cellM);
+  var grid=[];
+  for(var r=0;r<rows;r++){grid[r]=[];for(var c=0;c<cols;c++)grid[r][c]=0;}
+  // Mark obstacles
+  obs.forEach(function(o){
+    var c1=Math.floor(o.x/cellM),r1=Math.floor(o.y/cellM);
+    var c2=Math.ceil((o.x+o.w)/cellM),r2=Math.ceil((o.y+o.h)/cellM);
+    for(var r=Math.max(0,r1);r<Math.min(rows,r2);r++)for(var c=Math.max(0,c1);c<Math.min(cols,c2);c++)grid[r][c]=1;
+  });
+  // Mark head table zone
+  tables.filter(function(t){return t.head;}).forEach(function(t){
+    var margin=0.5;
+    var c1=Math.floor((t.x-margin)/cellM),r1=Math.floor((t.y-margin)/cellM);
+    var c2=Math.ceil((t.x+t.w+margin)/cellM),r2=Math.ceil((t.y+t.h+margin)/cellM);
+    for(var r=Math.max(0,r1);r<Math.min(rows,r2);r++)for(var c=Math.max(0,c1);c<Math.min(cols,c2);c++)grid[r][c]=1;
+  });
+  return{grid:grid,cols:cols,rows:rows,cellM:cellM};
+}
+
+function canPlace(grid,cols,rows,cellM,tx,ty,tw,th,aisle){
+  var margin=aisle/2;
+  var c1=Math.floor((tx-margin)/cellM),r1=Math.floor((ty-margin)/cellM);
+  var c2=Math.ceil((tx+tw+margin)/cellM),r2=Math.ceil((ty+th+margin)/cellM);
+  if(c1<0||r1<0||c2>cols||r2>rows)return false;
+  for(var r=Math.max(0,r1);r<Math.min(rows,r2);r++)for(var c=Math.max(0,c1);c<Math.min(cols,c2);c++)if(grid[r][c])return false;
+  return true;
+}
+
+function markPlaced(grid,cols,rows,cellM,tx,ty,tw,th,aisle){
+  var margin=aisle/2;
+  var c1=Math.floor((tx-margin)/cellM),r1=Math.floor((ty-margin)/cellM);
+  var c2=Math.ceil((tx+tw+margin)/cellM),r2=Math.ceil((ty+th+margin)/cellM);
+  for(var r=Math.max(0,r1);r<Math.min(rows,r2);r++)for(var c=Math.max(0,c1);c<Math.min(cols,c2);c++)grid[r][c]=1;
+}
+
+// ─── OPTIMISE ─────────────────────────────────────────────────────────────────
 function optimise(){
   getDims();
-  tables.filter(function(t){return!t.head;}).forEach(function(t){var e=document.getElementById(t.eid);if(e)e.remove();});
-  tables=tables.filter(function(t){return t.head;});
+  // Clear guest tables only
+  clearGuestTables();
   var guests=parseInt(document.getElementById('og').value)||80;
   var oshape=document.getElementById('oshape').value;
   var seatOpt=document.getElementById('os').value;
   var aisle=parseFloat(document.getElementById('aisle').value)||1.5;
-  var wall=0.8;
-  var head=tables.find(function(t){return t.head;});
-  var hpos=document.getElementById('hpos').value;
-  var x1=wall,y1=wall,x2=rw-wall,y2=rl-wall;
-  if(head){
-    if(hpos==='top')y1=head.y+head.h+aisle;
-    else if(hpos==='bottom')y2=head.y-aisle;
-    else if(hpos==='left')x1=head.x+head.w+aisle;
-    else x2=head.x-aisle;
-  }
+  var wall=0.6;
+  var cellM=0.5; // 0.5m grid resolution
+
   function getSeats(i){if(seatOpt==='mixed68')return i%2===0?8:6;if(seatOpt==='mixed810')return i%2===0?10:8;return parseInt(seatOpt)||8;}
   function getShape(i){if(oshape==='mixed')return i%2===0?'round':'rect';return oshape;}
+
+  // Calculate how many tables needed
+  var tableCount=0,rem2=guests,idx2=0;
+  while(rem2>0){var s2=Math.min(getSeats(idx2),rem2);rem2-=s2;tableCount++;idx2++;}
+
+  // Show calculation
+  var calcEl=document.getElementById('table-calc');
+  calcEl.style.display='block';
+  calcEl.innerHTML='<strong>'+guests+' guests</strong> needs <strong>'+tableCount+' tables</strong> — placing now…';
+
+  var occ=buildOccupancyGrid(cellM,false);
+  var grid=occ.grid,cols=occ.cols,rows=occ.rows;
+
+  // Scan room row by row, left to right, placing tables
+  var rem=guests,n=0,idx=0,placed=0;
+  // Step in aisle increments
   var refSz=tsize(getSeats(0),getShape(0),false);
-  var cellW=refSz.w+aisle,cellH=refSz.h+aisle;
-  var cols=Math.max(1,Math.floor((x2-x1)/cellW));
-  var rows=Math.max(1,Math.floor((y2-y1)/cellH));
-  var rem=guests,n=0,idx=0;
-  outer:for(var row=0;row<rows;row++){
-    for(var col=0;col<cols;col++){
-      if(rem<=0)break outer;
+  var stepX=refSz.w+aisle,stepY=refSz.h+aisle;
+
+  for(var ty=wall;ty<rl-wall&&rem>0;ty+=stepY){
+    for(var tx=wall;tx<rw-wall&&rem>0;tx+=stepX){
       var s=Math.min(getSeats(idx),rem);
       var sh=getShape(idx);
-      var sz2=tsize(s,sh,false);
-      var cx=x1+col*cellW+(cellW-sz2.w)/2;
-      var cy=y1+row*cellH+(cellH-sz2.h)/2;
-      n++;tid++;idx++;
-      var t={id:tid,eid:'t'+tid,name:'Table '+n,shape:sh,seats:s,w:sz2.w,h:sz2.h,x:cx,y:cy,rotated:false,head:false};
-      t._type='table';
-      tables.push(t);
-      document.getElementById('room').appendChild(mkTableEl(t));
-      rem-=s;
+      var sz=tsize(s,sh,false);
+      // Try to place at this position
+      if(canPlace(grid,cols,rows,cellM,tx,ty,sz.w,sz.h,aisle)){
+        markPlaced(grid,cols,rows,cellM,tx,ty,sz.w,sz.h,aisle);
+        n++;tid++;idx++;placed++;
+        var t={id:tid,eid:'t'+tid,name:'Table '+n,shape:sh,seats:s,w:sz.w,h:sz.h,x:tx,y:ty,rotated:false,head:false};
+        tables.push(t);
+        document.getElementById('room').appendChild(mkTableEl(t));
+        rem-=s;
+      }
     }
   }
   document.getElementById('hint').style.display='none';
-  renderTList();updateStats();
+  calcEl.innerHTML='<strong>'+guests+' guests</strong> across <strong>'+placed+' tables</strong>'+(rem>0?' — '+rem+' guests could not be placed (room too small for this layout)':' — all guests seated ✓');
+  updateAllLists();updateStats();
+}
+
+function clearGuestTables(){
+  tables.filter(function(t){return!t.head;}).forEach(function(t){var e=document.getElementById(t.eid);if(e)e.remove();});
+  tables=tables.filter(function(t){return t.head;});
+  clearSightlines();updateAllLists();updateStats();
+}
+
+// ─── SIGHTLINE CHECK ─────────────────────────────────────────────────────────
+// Cast a ray from each guest table centre to head table centre.
+// Check if any obstacle rectangle intersects the ray.
+function checkSightlines(){
+  clearSightlines();
+  var head=tables.find(function(t){return t.head;});
+  if(!head){alert('Please place a head table first.');return;}
+  var hcx=head.x+head.w/2,hcy=head.y+head.h/2;
+  var svg=document.getElementById('sightsvg');
+  var lines='';
+  var blocked=0,clear=0;
+  tables.filter(function(t){return!t.head;}).forEach(function(t){
+    var tcx=t.x+t.w/2,tcy=t.y+t.h/2;
+    var isBlocked=false;
+    obs.forEach(function(o){
+      if(lineIntersectsRect(tcx,tcy,hcx,hcy,o.x,o.y,o.x+o.w,o.y+o.h))isBlocked=true;
+    });
+    var v=document.getElementById('v'+t.eid);
+    if(v){v.classList.remove('blocked','clear');v.classList.add(isBlocked?'blocked':'clear');}
+    var col=isBlocked?'#c0392b':'#27ae60';
+    lines+='<line x1="'+Math.round(px(tcx))+'" y1="'+Math.round(px(tcy))+'" x2="'+Math.round(px(hcx))+'" y2="'+Math.round(px(hcy))+'" stroke="'+col+'" stroke-width="1" stroke-dasharray="'+(isBlocked?'4,3':'3,3')+'" opacity="0.6"/>';
+    if(isBlocked)blocked++;else clear++;
+  });
+  svg.innerHTML=lines;
+  document.getElementById('sg').textContent=blocked>0?blocked+'⚠':'✓';
+  document.getElementById('sg').style.color=blocked>0?'#c0392b':'#27ae60';
+}
+
+function clearSightlines(){
+  document.getElementById('sightsvg').innerHTML='';
+  tables.forEach(function(t){var v=document.getElementById('v'+t.eid);if(v){v.classList.remove('blocked','clear');}});
+  document.getElementById('sg').textContent='—';document.getElementById('sg').style.color='#9a8060';
+}
+
+// Ray vs AABB intersection
+function lineIntersectsRect(x1,y1,x2,y2,rx1,ry1,rx2,ry2){
+  function side(ax,ay,bx,by,px2,py2){return(bx-ax)*(py2-ay)-(by-ay)*(px2-ax);}
+  function segIntersect(ax,ay,bx,by,cx,cy,dx,dy){
+    var d1=side(cx,cy,dx,dy,ax,ay),d2=side(cx,cy,dx,dy,bx,by);
+    var d3=side(ax,ay,bx,by,cx,cy),d4=side(ax,ay,bx,by,dx,dy);
+    if(((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0)))return true;
+    return false;
+  }
+  return segIntersect(x1,y1,x2,y2,rx1,ry1,rx2,ry1)||
+         segIntersect(x1,y1,x2,y2,rx2,ry1,rx2,ry2)||
+         segIntersect(x1,y1,x2,y2,rx2,ry2,rx1,ry2)||
+         segIntersect(x1,y1,x2,y2,rx1,ry2,rx1,ry1);
 }
 
 // ─── LISTS ───────────────────────────────────────────────────────────────────
-function renderTList(){
-  var el=document.getElementById('tlist');
-  if(!tables.length){el.innerHTML='<div class="empty">No tables yet</div>';return;}
-  el.innerHTML=tables.map(function(t){
-    return'<div class="irow"><div style="width:12px;height:12px;flex-shrink:0;background:'+(t.head?T.primary:T.tableGuest)+';border-radius:'+(t.shape==='round'?'50%':'3px')+';border:1px solid '+T.tableBorder+'"></div><div class="iname">'+t.name+'<br><span class="isub">'+t.seats+' seats · '+t.shape+(t.head?' · HEAD':'')+'</span></div><button class="xbtn" onclick="removeT('+t.id+')">×</button></div>';
-  }).join('');
-}
 function renderOList(){
   var el=document.getElementById('olist');
   if(!obs.length){el.innerHTML='<div class="empty">No features yet</div>';return;}
-  el.innerHTML=obs.map(function(o){
-    return'<div class="irow"><div style="width:12px;height:12px;flex-shrink:0;background:'+(OBS_COL[o.type]||'#ccc')+';border:1px dashed #888;border-radius:'+(o.shape==='c'?'50%':'3px')+'"></div><div class="iname">'+o.name+'</div><button class="xbtn" onclick="removeO('+o.id+')">×</button></div>';
-  }).join('');
+  el.innerHTML=obs.map(function(o){return'<div class="irow"><div style="width:11px;height:11px;flex-shrink:0;background:'+(OBS_COL[o.type]||'#ccc')+';border:1px dashed #888;border-radius:'+(o.shape==='c'?'50%':'2px')+'"></div><div class="iname">'+o.name+'</div><button class="xbtn" onclick="removeO('+o.id+')">×</button></div>';}).join('');
 }
-function removeT(id){var t=tables.find(function(x){return x.id===id;});if(!t)return;var e=document.getElementById(t.eid);if(e)e.remove();tables=tables.filter(function(x){return x.id!==id;});if(selId===t.eid)setSel(null,null);renderTList();updateStats();}
+function updateFullList(){
+  var el=document.getElementById('tlist');
+  if(!tables.length){el.innerHTML='<div class="empty">No tables yet</div>';return;}
+  el.innerHTML=tables.map(function(t){return'<div class="irow"><div style="width:11px;height:11px;flex-shrink:0;background:'+(t.head?T.primary:T.tg)+';border-radius:'+(t.shape==='round'?'50%':'2px')+';border:1px solid '+T.tb+'"></div><div class="iname">'+t.name+'<br><span class="isub">'+t.seats+' seats'+(t.head?' · HEAD':'')+'</span></div><button class="xbtn" onclick="removeT('+t.id+')">×</button></div>';}).join('');
+  var tot=tables.reduce(function(a,t){return a+(parseInt(t.seats)||0);},0);
+  document.getElementById('sumtext').innerHTML='<strong>Tables:</strong> '+tables.length+'<br><strong>Total seats:</strong> '+tot+'<br><br>'+tables.map(function(t){return'<span style="color:'+T.primary+'">▪ '+t.name+'</span> — '+t.seats+' seats'+(t.head?' (head)':'');}).join('<br>');
+}
+function updateAllLists(){updateFullList();}
+function removeT(id){var t=tables.find(function(x){return x.id===id;});if(!t)return;var e=document.getElementById(t.eid);if(e)e.remove();tables=tables.filter(function(x){return x.id!==id;});if(selId===t.eid)setSel(null,null);updateAllLists();updateStats();}
 function removeO(id){var o=obs.find(function(x){return x.id===id;});if(!o)return;var e=document.getElementById(o.eid);if(e)e.remove();obs=obs.filter(function(x){return x.id!==id;});if(selId===o.eid)setSel(null,null);renderOList();updateStats();}
 
-// ─── STATS ───────────────────────────────────────────────────────────────────
 function updateStats(){
   document.getElementById('st').textContent=tables.length;
   document.getElementById('ss').textContent=tables.reduce(function(a,t){return a+(parseInt(t.seats)||0);},0);
   document.getElementById('sf').textContent=obs.length;
-}
-function updateSum(){
-  var el=document.getElementById('sumtext');
-  if(!tables.length){el.innerHTML='<span style="font-style:italic;color:var(--muted,#9a8060)">No tables yet</span>';return;}
-  var tot=tables.reduce(function(a,t){return a+(parseInt(t.seats)||0);},0);
-  el.innerHTML='<strong>Tables:</strong> '+tables.length+'<br><strong>Total seats:</strong> '+tot+'<br><br>'+tables.map(function(t){return'<span style="color:'+T.primary+'">▪ '+t.name+'</span> — '+t.seats+' seats'+(t.head?' (head)':'');}).join('<br>');
 }
 
 // ─── ZOOM ────────────────────────────────────────────────────────────────────
@@ -585,13 +729,17 @@ function clearAll(){
   if(!confirm('Clear the entire floor plan?'))return;
   tables.forEach(function(t){var e=document.getElementById(t.eid);if(e)e.remove();});
   obs.forEach(function(o){var e=document.getElementById(o.eid);if(e)e.remove();});
-  tables=[];obs=[];tid=0;oid=0;setSel(null,null);renderTList();renderOList();updateStats();
+  tables=[];obs=[];tid=0;oid=0;setSel(null,null);clearSightlines();
+  document.getElementById('htlist').innerHTML='<div class="empty">Not placed yet</div>';
+  var nb=document.getElementById('btn-to-step4');nb.style.opacity='0.4';nb.style.pointerEvents='none';
+  document.getElementById('table-calc').style.display='none';
+  updateAllLists();renderOList();updateStats();
   document.getElementById('hint').style.display='';
 }
 
-// Click background to deselect
+// Click background deselects
 document.getElementById('room').addEventListener('click',function(e){
-  if(e.target===this||e.target===document.getElementById('gridsvg')||e.target.tagName==='line'||e.target.tagName==='text'||e.target.tagName==='svg')clearSel();
+  if(e.target===this||e.target.tagName==='svg'||e.target.tagName==='line'||e.target.tagName==='text')clearSel();
 });
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
