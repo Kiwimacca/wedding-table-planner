@@ -522,12 +522,10 @@ function placeHead(){
   updateStats();
 }
 
-// ── OPTIMISE — FIXED ALGORITHM ────────────────────────────────────────────────
-// Key fix: scan positions in aisle steps, check each position against
-// obstacles and existing placed tables directly (no grid marking errors)
-function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh,margin){
-  margin=margin||0;
-  return ax<bx+bw+margin&&ax+aw+margin>bx&&ay<by+bh+margin&&ay+ah+margin>by;
+// ── OPTIMISE ──────────────────────────────────────────────────────────────────
+function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh,gap){
+  gap=gap||0;
+  return ax<bx+bw+gap && ax+aw+gap>bx && ay<by+bh+gap && ay+ah+gap>by;
 }
 
 function optimise(){
@@ -542,71 +540,62 @@ function optimise(){
   function getSeats(i){if(seatOpt==='mixed68')return i%2===0?8:6;if(seatOpt==='mixed810')return i%2===0?10:8;return parseInt(seatOpt)||8;}
   function getShape(i){if(oshape==='mixed')return i%2===0?'round':'rect';return oshape;}
 
-  // Calculate needed table count
-  var rem2=guests,cnt=0,idx2=0;
-  while(rem2>0){rem2-=Math.min(getSeats(idx2),rem2);cnt++;idx2++;}
-
-  // Reference size for stepping
+  // Use reference table size to define grid steps
   var refSz=tsize(getSeats(0),getShape(0),false);
-  // Step = table dimension + aisle
-  var stepX=refSz.w+aisle;
-  var stepY=refSz.h+aisle;
+  var colStep=refSz.w+aisle;
+  var rowStep=refSz.h+aisle;
 
-  var rem=guests,n=0,idx=0;
-  var placedItems=[]; // track placed table rects
+  // Usable bounds
+  var x1=wall, y1=wall, x2=rw-wall, y2=rl-wall;
 
-  // Add obstacles and head table as blocked zones
+  // Pre-calculate grid dimensions
+  var cols=Math.max(1,Math.floor((x2-x1)/colStep));
+  var rows=Math.max(1,Math.floor((y2-y1)/rowStep));
+
+  // Blocked zones: obstacles + head table
   var blocked=[];
   obs.forEach(function(o){blocked.push({x:o.x,y:o.y,w:o.w,h:o.h});});
   tables.filter(function(t){return t.head;}).forEach(function(t){blocked.push({x:t.x,y:t.y,w:t.w,h:t.h});});
 
   function isFree(tx,ty,tw,th){
-    // Must be within room bounds with wall margin
-    if(tx<wall||ty<wall||tx+tw>rw-wall||ty+th>rl-wall)return false;
-    // Check against obstacles and head table
+    if(tx<x1||ty<y1||tx+tw>x2||ty+th>y2)return false;
     for(var i=0;i<blocked.length;i++){
-      if(rectsOverlap(tx,ty,tw,th,blocked[i].x,blocked[i].y,blocked[i].w,blocked[i].h,aisle*0.5))return false;
-    }
-    // Check against already placed guest tables
-    for(var j=0;j<placedItems.length;j++){
-      if(rectsOverlap(tx,ty,tw,th,placedItems[j].x,placedItems[j].y,placedItems[j].w,placedItems[j].h,aisle*0.5))return false;
+      if(rectsOverlap(tx,ty,tw,th,blocked[i].x,blocked[i].y,blocked[i].w,blocked[i].h,aisle*0.4))return false;
     }
     return true;
   }
 
-  // Scan row by row
-  for(var ty=wall;ty<rl-wall&&rem>0;ty+=stepY){
-    for(var tx=wall;tx<rw-wall&&rem>0;tx+=stepX){
+  var rem=guests,n=0,idx=0;
+
+  // Clean row/col loop — this is the fix
+  outerLoop:
+  for(var row=0;row<rows;row++){
+    for(var col=0;col<cols;col++){
+      if(rem<=0) break outerLoop;
       var s=Math.min(getSeats(idx),rem);
       var sh=getShape(idx);
       var sz=tsize(s,sh,false);
-      // Try exact position, then nudge slightly if blocked
-      var placed=false;
-      var tryOffsets=[[0,0],[0.1,0],[0,0.1],[-0.1,0],[0,-0.1]];
-      for(var oi=0;oi<tryOffsets.length&&!placed;oi++){
-        var ttx=tx+tryOffsets[oi][0],tty=ty+tryOffsets[oi][1];
-        if(isFree(ttx,tty,sz.w,sz.h)){
-          placedItems.push({x:ttx,y:tty,w:sz.w,h:sz.h});
-          n++;tid++;idx++;
-          var t={id:tid,eid:'t'+tid,name:'Table '+n,shape:sh,seats:s,w:sz.w,h:sz.h,x:ttx,y:tty,rotated:false,head:false};
-          tables.push(t);document.getElementById('room').appendChild(mkTableEl(t));
-          rem-=s;placed=true;
-        }
+      var tx=x1+col*colStep;
+      var ty=y1+row*rowStep;
+      if(isFree(tx,ty,sz.w,sz.h)){
+        n++;tid++;idx++;
+        var t={id:tid,eid:'t'+tid,name:'Table '+n,shape:sh,seats:s,w:sz.w,h:sz.h,x:tx,y:ty,rotated:false,head:false};
+        tables.push(t);
+        document.getElementById('room').appendChild(mkTableEl(t));
+        rem-=s;
       }
     }
   }
 
   document.getElementById('hint').style.display='none';
-
   var calcEl=document.getElementById('calcbox');
   calcEl.style.display='block';
   if(rem<=0){
     calcEl.className='alert ok show';
     calcEl.innerHTML='<strong>'+guests+' guests</strong> across <strong>'+n+' tables</strong> — all guests seated ✓';
   } else {
-    var seated=guests-rem;
     calcEl.className='alert err show';
-    calcEl.innerHTML='<strong>'+seated+' of '+guests+' guests</strong> seated across '+n+' tables.<br><strong>'+rem+' guests could not be placed.</strong><br>Try: reduce aisle width, smaller table size, or enlarge the room.';
+    calcEl.innerHTML='<strong>'+(guests-rem)+' of '+guests+' guests</strong> placed across '+n+' tables. <strong>'+rem+' could not fit.</strong> Try reducing aisle width or table size.';
   }
   updateAllLists();updateStats();
 }
